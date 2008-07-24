@@ -20,40 +20,38 @@
  *
  ****************************************************************************
  *
- * Neux source
+ * NPushButton implementation
  *
  * REVISION:
  * 
- * 1) Initial creation. ----------------------------------- 2008-07-15 WX
+ * 2) Import to OSD20.--------------------------------2008-07-21WX 
+ * 1) Initial creation. ----------------------------------- 2008-15-16 nerochiaro
  *
  */
 
-#include "neux.h"
-#include "ngradientlabelplugin.h"
-#include "ndatetimelabelplugin.h"
-#include "ncapacitybarplugin.h"
-#include "npushbuttonplugin.h"
+//#define QT_NO_DEBUG_OUTPUT
+#include <QDebug>
+#include "npushbutton.h"
 
-Neux::Neux(QObject *parent)
-: QObject(parent)
+NPushButton::NPushButton(QWidget *parent)
+: QPushButton(parent)
 {
-    widgets.append(new NCapacityBarPlugin(this));
-    widgets.append(new NGradientLabelPlugin(this));
-    widgets.append(new NDateTimeLabelPlugin(this));
-    widgets.append(new NPushButtonPlugin(this));
 }
 
-QList<QDesignerCustomWidgetInterface*> Neux::customWidgets( ) const
+NPushButton::NPushButton(const QString &text, QWidget *parent)
+: QPushButton(text, parent)
 {
-    return widgets;
 }
 
-/*
- * Export custom widget plugin to Qt Designer
- * Q_EXPORT_PLUGIN2(PluginName, ClassName)
- * This macro exports the plugin class ClassName for the plugin specified 
- * by PluginName. 
- * The value of PluginName should correspond 
- * to the TARGET specified in the plugin's project file.
- */
-Q_EXPORT_PLUGIN2(neux, Neux)
+NPushButton::NPushButton(const QIcon &icon, const QString &text, QWidget *parent)
+: QPushButton(icon, text, parent)
+{
+}
+
+void NPushButton::keyPressEvent(QKeyEvent *event)
+{
+	if (e->key( ) == Qt::Key_Enter) 
+		animateClick(AnimateClickDelay);
+
+	return QAbstractButton::keyPressEvent(e);
+}
