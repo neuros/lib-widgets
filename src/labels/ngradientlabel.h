@@ -30,10 +30,6 @@
  *
  */
 
-#if defined(DESIGNER)
-    #include <QtDesigner/QDesignerExportWidget>
-#endif
-
 #include <QLabel>
 #include <QColor>
 
@@ -42,6 +38,7 @@
  * to ensure that they are correctly exported from plugins for use with Qt Designer.
  */
 #if defined(DESIGNER)
+#include <QtDesigner/QDesignerExportWidget>
 class QDESIGNER_WIDGET_EXPORT NGradientLabel : public QLabel
 #else
 class NGradientLabel : public QLabel

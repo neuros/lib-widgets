@@ -1,3 +1,11 @@
 <RCC>
-  <qresource prefix="neux" />
+    <qresource prefix="neux">
+        <file>cf.gif</file>
+        <file>md.gif</file>
+        <file>mmc.png</file>
+        <file>ms.png</file>
+        <file>osd.gif</file>
+        <file>sd.png</file>
+        <file>usb.png</file>
+    </qresource>
 </RCC>

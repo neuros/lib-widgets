@@ -1,3 +1,5 @@
+#ifndef _NSTORAGEICONLABEL_H_
+#define _NSTORAGEICONLABEL_H_
 /*
  *  Copyright(C) 2007 Neuros Technology International LLC. 
  *               <www.neurostechnology.com>
@@ -20,38 +22,40 @@
  *
  ****************************************************************************
  *
- * NPushButton implementation
+ * NStorageIconLabel implement header.
  *
  * REVISION:
  * 
- * 2) Import to OSD20.--------------------------------2008-07-21WX 
- * 1) Initial creation. ----------------------------------- 2008-15-16 nerochiaro
+ * 2) Import to OSD20. ----------------------------------- 2008-07-22 WX
+ * 1) Initial creation. ----------------------------------- 2007-12-19 GL
  *
  */
 
-//#define QT_NO_DEBUG_OUTPUT
-#include <QDebug>
-#include "npushbutton.h"
+#include <QLabel>
+#include <QResizeEvent>
+#include <QPixmap>
 
-NPushButton::NPushButton(QWidget *parent)
-: QPushButton(parent)
+#if defined(DESIGNER)
+#include <QtDesigner/QDesignerExportWidget>
+class QDESIGNER_WIDGET_EXPORT NStorageIconLabel : public QLabel
+#else
+class NStorageIconLabel : public QLabel
+#endif
 {
-}
+    Q_OBJECT
+    Q_ENUMS(Icon)
+    Q_PROPERTY(Icon storageIcon READ icon WRITE setIcon)
 
-NPushButton::NPushButton(const QString &text, QWidget *parent)
-: QPushButton(text, parent)
-{
-}
+public:
+    enum Icon { IconNone = 0, IconOSD, IconCF, IconMD, IconMMC, IconMS, IconSD, IconUSB };
 
-NPushButton::NPushButton(const QIcon &icon, const QString &text, QWidget *parent)
-: QPushButton(icon, text, parent)
-{
-}
+    NStorageIconLabel(QWidget *parent = NULL, Qt::WindowFlags f = 0);
 
-void NPushButton::keyPressEvent(QKeyEvent *event)
-{
-	if (event->key( ) == Qt::Key_Enter) 
-		animateClick(AnimateClickDelay);
+    void setIcon (Icon icon);
+    Icon icon( ) const { return storageIcon; }
 
-	return QAbstractButton::keyPressEvent(event);
-}
+private:
+    Icon storageIcon;
+};
+
+#endif // _NSTORAGEICONLABEL_H_

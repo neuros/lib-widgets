@@ -30,16 +30,13 @@
  *
  */
 
-#if defined(DESIGNER)
-    #include <QtDesigner/QDesignerExportWidget>
-#endif
-
 #include <QLabel>
 #include <QColor>
 #include <QTimer>
 #include <QDateTime>
 
 #if defined(DESIGNER)
+#include <QtDesigner/QDesignerExportWidget>
 class QDESIGNER_WIDGET_EXPORT NDateTimeLabel : public QLabel
 #else
 class NDateTimeLabel : public QLabel

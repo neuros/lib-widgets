@@ -31,7 +31,7 @@
  */
 
 #include <QProgressBar>
-#include <QMetaType>
+
 #if defined(DESIGNER)
 #include <QtDesigner/QDesignerExportWidget>
 class QDESIGNER_WIDGET_EXPORT NCapacityBar : public QProgressBar
