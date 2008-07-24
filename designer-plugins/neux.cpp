@@ -31,10 +31,12 @@
 #include "neux.h"
 #include "ngradientlabelplugin.h"
 #include "ndatetimelabelplugin.h"
+#include "ncapacitybarplugin.h"
 
 Neux::Neux(QObject *parent)
 : QObject(parent)
 {
+    widgets.append(new NCapacityBarPlugin(this));
     widgets.append(new NGradientLabelPlugin(this));
     widgets.append(new NDateTimeLabelPlugin(this));
 }
