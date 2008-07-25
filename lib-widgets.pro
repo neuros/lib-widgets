@@ -13,6 +13,7 @@ RCC_DIR	=	./tmp
 INCLUDEPATH +=	./tmp \
 		./src/bars \
 		./src/buttons \
+		./src/edits \
 		./src/labels
 
 CONFIG(designer) {
@@ -20,6 +21,7 @@ DEFINES += DESIGNER
 CONFIG += plugin
 
 HEADERS +=	./designer-plugins/ncapacitybarplugin.h \
+		./designer-plugins/nlineeditplugin.h \
 		./designer-plugins/ngradientlabelplugin.h \
 		./designer-plugins/ndatetimelabelplugin.h \
 		./designer-plugins/npushbuttonplugin.h \
@@ -27,6 +29,7 @@ HEADERS +=	./designer-plugins/ncapacitybarplugin.h \
 		./designer-plugins/neux.h
 
 SOURCES +=	./designer-plugins/ncapacitybarplugin.cpp \
+		./designer-plugins/nlineeditplugin.cpp \
 		./designer-plugins/ngradientlabelplugin.cpp \
 		./designer-plugins/ndatetimelabelplugin.cpp \
 		./designer-plugins/npushbuttonplugin.cpp \
@@ -43,12 +46,14 @@ LIBS+=
 #Source Files
 SOURCES +=	./src/bars/ncapacitybar.cpp \
 		./src/buttons/npushbutton.cpp \
+		./src/edits/nlineedit.cpp \
 		./src/labels/ngradientlabel.cpp \
 		./src/labels/ndatetimelabel.cpp \
 		./src/labels/nstorageiconlabel.cpp
 #Header Files
 HEADERS +=	./src/bars/ncapacitybar.h \ 
 		./src/buttons/npushbutton.h \
+		./src/edits/nlineedit.h \
 		./src/labels/ngradientlabel.h \
 		./src/labels/ndatetimelabel.h \
 		./src/labels/nstorageiconlabel.h
@@ -78,6 +83,7 @@ rootfs.extra = cp -a ./build/* /${ROOTFS}/fs/lib
 
 toolchain_include.files =./src/bars/*.h \
 			 ./src/buttons/*.h \
+			 ./src/edits/*.h \
 			 ./src/labels/*.h	
 				
 toolchain_lib.files = ./build/*.so.1.0.0

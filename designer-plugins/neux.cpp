@@ -32,6 +32,7 @@
 #include "ngradientlabelplugin.h"
 #include "ndatetimelabelplugin.h"
 #include "ncapacitybarplugin.h"
+#include "nlineeditplugin.h"
 #include "npushbuttonplugin.h"
 #include "nstorageiconlabelplugin.h"
 
@@ -41,6 +42,7 @@ Neux::Neux(QObject *parent)
     widgets.append(new NCapacityBarPlugin(this));
     widgets.append(new NGradientLabelPlugin(this));
     widgets.append(new NDateTimeLabelPlugin(this));
+    widgets.append(new NLineEditPlugin(this));
     widgets.append(new NPushButtonPlugin(this));
     widgets.append(new NStorageIconLabelPlugin(this));
 }
