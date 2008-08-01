@@ -26,6 +26,7 @@ HEADERS +=	./designer-plugins/ncapacitybarplugin.h \
 		./designer-plugins/ndatetimelabelplugin.h \
 		./designer-plugins/npushbuttonplugin.h \
 		./designer-plugins/nstorageiconlabelplugin.h \
+		./designer-plugins/ntimeprogressbarplugin.h \
 		./designer-plugins/neux.h
 
 SOURCES +=	./designer-plugins/ncapacitybarplugin.cpp \
@@ -34,6 +35,7 @@ SOURCES +=	./designer-plugins/ncapacitybarplugin.cpp \
 		./designer-plugins/ndatetimelabelplugin.cpp \
 		./designer-plugins/npushbuttonplugin.cpp \
 		./designer-plugins/nstorageiconlabelplugin.cpp \
+		./designer-plugins/ntimeprogressbarplugin.cpp \
 		./designer-plugins/neux.cpp
 } else {
 include (./config.pri)
@@ -45,13 +47,15 @@ LIBS+=
 
 #Source Files
 SOURCES +=	./src/bars/ncapacitybar.cpp \
+		./src/bars/ntimeprogressbar.cpp \
 		./src/buttons/npushbutton.cpp \
 		./src/edits/nlineedit.cpp \
 		./src/labels/ngradientlabel.cpp \
 		./src/labels/ndatetimelabel.cpp \
 		./src/labels/nstorageiconlabel.cpp
 #Header Files
-HEADERS +=	./src/bars/ncapacitybar.h \ 
+HEADERS +=	./src/bars/ncapacitybar.h \
+		./src/bars/ntimeprogressbar.h \ 
 		./src/buttons/npushbutton.h \
 		./src/edits/nlineedit.h \
 		./src/labels/ngradientlabel.h \

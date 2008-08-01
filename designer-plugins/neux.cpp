@@ -35,6 +35,7 @@
 #include "nlineeditplugin.h"
 #include "npushbuttonplugin.h"
 #include "nstorageiconlabelplugin.h"
+#include "ntimeprogressbarplugin.h"
 
 Neux::Neux(QObject *parent)
 : QObject(parent)
@@ -45,6 +46,7 @@ Neux::Neux(QObject *parent)
     widgets.append(new NLineEditPlugin(this));
     widgets.append(new NPushButtonPlugin(this));
     widgets.append(new NStorageIconLabelPlugin(this));
+    widgets.append(new NTimeProgressBarPlugin(this));
 }
 
 QList<QDesignerCustomWidgetInterface*> Neux::customWidgets( ) const
