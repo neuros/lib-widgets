@@ -12,6 +12,7 @@ RCC_DIR	=	./tmp
 
 INCLUDEPATH +=	./tmp \
 		./src/bars \
+		./src/boxes \
 		./src/buttons \
 		./src/edits \
 		./src/labels
@@ -24,6 +25,7 @@ HEADERS +=	./designer-plugins/ncapacitybarplugin.h \
 		./designer-plugins/nlineeditplugin.h \
 		./designer-plugins/ngradientlabelplugin.h \
 		./designer-plugins/ndatetimelabelplugin.h \
+		./designer-plugins/nhorizontalcomboboxplugin.h \
 		./designer-plugins/npushbuttonplugin.h \
 		./designer-plugins/nstorageiconlabelplugin.h \
 		./designer-plugins/ntimeprogressbarplugin.h \
@@ -33,6 +35,7 @@ SOURCES +=	./designer-plugins/ncapacitybarplugin.cpp \
 		./designer-plugins/nlineeditplugin.cpp \
 		./designer-plugins/ngradientlabelplugin.cpp \
 		./designer-plugins/ndatetimelabelplugin.cpp \
+		./designer-plugins/nhorizontalcomboboxplugin.cpp \
 		./designer-plugins/npushbuttonplugin.cpp \
 		./designer-plugins/nstorageiconlabelplugin.cpp \
 		./designer-plugins/ntimeprogressbarplugin.cpp \
@@ -48,6 +51,7 @@ LIBS+=
 #Source Files
 SOURCES +=	./src/bars/ncapacitybar.cpp \
 		./src/bars/ntimeprogressbar.cpp \
+		./src/boxes/nhorizontalcombobox.cpp \
 		./src/buttons/npushbutton.cpp \
 		./src/edits/nlineedit.cpp \
 		./src/labels/ngradientlabel.cpp \
@@ -55,7 +59,8 @@ SOURCES +=	./src/bars/ncapacitybar.cpp \
 		./src/labels/nstorageiconlabel.cpp
 #Header Files
 HEADERS +=	./src/bars/ncapacitybar.h \
-		./src/bars/ntimeprogressbar.h \ 
+		./src/bars/ntimeprogressbar.h \
+		./src/boxes/nhorizontalcombobox.h \
 		./src/buttons/npushbutton.h \
 		./src/edits/nlineedit.h \
 		./src/labels/ngradientlabel.h \
@@ -86,6 +91,7 @@ rootfs.files = ./build/*.so.1.0.0
 rootfs.extra = cp -a ./build/* /${ROOTFS}/fs/lib
 
 toolchain_include.files =./src/bars/*.h \
+			 ./src/boxes/*.h \
 			 ./src/buttons/*.h \
 			 ./src/edits/*.h \
 			 ./src/labels/*.h	
