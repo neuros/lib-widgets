@@ -44,6 +44,7 @@ class NHorizontalComboBox : public QComboBox
     Q_ENUMS(PlayRole)
     Q_PROPERTY(PlayRole role READ playRole WRITE setPlayRole)
     Q_PROPERTY(bool wrapping READ isWrapping WRITE setWrapping)
+    Q_PROPERTY(bool lineEditTransparent READ isLineEditTransparent WRITE setLineEditTransparent)
 
 public:
     enum PlayRole { PlayAsComboBox = 0, PlayAsSpinBox };
@@ -56,6 +57,9 @@ public:
     bool isWrapping( ) const { return wrapping; }
     void setWrapping(bool w) { wrapping = w; }
 
+    bool isLineEditTransparent( ) const;
+    void setLineEditTransparent(bool transparent);
+
     QSize sizeHint() const;
 
 protected:
@@ -67,7 +71,7 @@ private:
 private:
     PlayRole role;
     bool wrapping;
-
+    QColor editorBackgroundColor;
 };
 
 #endif // _NHORIZONTALCOMBOBOX_H_

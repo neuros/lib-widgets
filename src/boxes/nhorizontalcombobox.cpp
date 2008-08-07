@@ -30,6 +30,7 @@
 
 //#define QT_NO_DEBUG_OUTPUT
 #include <QDebug>
+#include <QLineEdit>
 #include <QKeyEvent>
 #include "nhorizontalcombobox.h"
 
@@ -38,6 +39,36 @@ NHorizontalComboBox::NHorizontalComboBox(QWidget *parent)
 {
     setWrapping(true);
     setPlayRole(PlayAsComboBox);
+}
+
+bool NHorizontalComboBox::isLineEditTransparent( ) const 
+{
+    if (lineEdit( ) == NULL)
+        return false; //No editor, just return false.
+
+    QPalette pal = lineEdit( )->palette( );
+    return (QColor(Qt::transparent) == pal.color(lineEdit( )->backgroundRole( )));
+}
+
+void NHorizontalComboBox::setLineEditTransparent(bool transparent)
+{
+    if ((lineEdit( ) == NULL)
+        || (transparent == isLineEditTransparent( )))
+        return;
+
+    QPalette pal = lineEdit( )->palette( );
+    if (transparent)
+    {
+        //Backup the background color
+        editorBackgroundColor = pal.color(lineEdit( )->backgroundRole( ));
+        pal.setColor(lineEdit( )->backgroundRole( ), Qt::transparent);
+    }
+    else
+    {
+        pal.setColor(lineEdit( )->backgroundRole( ), editorBackgroundColor);
+    }
+
+    lineEdit( )->setPalette(pal);
 }
 
 void NHorizontalComboBox::setPlayRole(PlayRole pr)
@@ -49,10 +80,8 @@ void NHorizontalComboBox::setPlayRole(PlayRole pr)
     switch (role)
     {
     case PlayAsComboBox:
-        setEditable(false);
         break;
     case PlayAsSpinBox:
-        setEditable(true);
         break;
     default:
         break;
