@@ -15,7 +15,10 @@ INCLUDEPATH +=	./tmp \
 		./src/boxes \
 		./src/buttons \
 		./src/edits \
-		./src/labels
+		./src/items \
+		./src/labels \
+		./src/models \
+		./src/views
 
 CONFIG(designer) {
 DEFINES += DESIGNER
@@ -23,6 +26,7 @@ CONFIG += plugin
 
 HEADERS +=	./designer-plugins/ncapacitybarplugin.h \
 		./designer-plugins/nlineeditplugin.h \
+		./designer-plugins/nlistviewplugin.h \
 		./designer-plugins/ngradientlabelplugin.h \
 		./designer-plugins/ndatetimelabelplugin.h \
 		./designer-plugins/nhorizontalcomboboxplugin.h \
@@ -33,6 +37,7 @@ HEADERS +=	./designer-plugins/ncapacitybarplugin.h \
 
 SOURCES +=	./designer-plugins/ncapacitybarplugin.cpp \
 		./designer-plugins/nlineeditplugin.cpp \
+		./designer-plugins/nlistviewplugin.cpp \
 		./designer-plugins/ngradientlabelplugin.cpp \
 		./designer-plugins/ndatetimelabelplugin.cpp \
 		./designer-plugins/nhorizontalcomboboxplugin.cpp \
@@ -54,18 +59,26 @@ SOURCES +=	./src/bars/ncapacitybar.cpp \
 		./src/boxes/nhorizontalcombobox.cpp \
 		./src/buttons/npushbutton.cpp \
 		./src/edits/nlineedit.cpp \
+		./src/items/nitemdelegate.cpp \
 		./src/labels/ngradientlabel.cpp \
 		./src/labels/ndatetimelabel.cpp \
-		./src/labels/nstorageiconlabel.cpp
+		./src/labels/nstorageiconlabel.cpp \
+		./src/models/nlistviewitem.cpp \
+                ./src/models/nlistviewmodel.cpp \
+                ./src/views/nlistview.cpp
 #Header Files
 HEADERS +=	./src/bars/ncapacitybar.h \
 		./src/bars/ntimeprogressbar.h \
 		./src/boxes/nhorizontalcombobox.h \
 		./src/buttons/npushbutton.h \
 		./src/edits/nlineedit.h \
+		./src/items/nitemdelegate.h \
 		./src/labels/ngradientlabel.h \
 		./src/labels/ndatetimelabel.h \
-		./src/labels/nstorageiconlabel.h
+		./src/labels/nstorageiconlabel.h \
+		./src/models/nlistviewitem.h \
+                ./src/models/nlistviewmodel.h \
+                ./src/views/nlistview.h
 
 #Form Files
 FORMS +=
@@ -94,7 +107,10 @@ toolchain_include.files =./src/bars/*.h \
 			 ./src/boxes/*.h \
 			 ./src/buttons/*.h \
 			 ./src/edits/*.h \
-			 ./src/labels/*.h	
+			 ./src/items/*.h \
+			 ./src/labels/*.h \
+			 ./src/models/*.h \
+                         ./src/views/*.h	
 				
 toolchain_lib.files = ./build/*.so.1.0.0
 toolchain_lib.extra = cp -a ./build/* /${TOOLCHAIN_USR_INSTALL}/lib

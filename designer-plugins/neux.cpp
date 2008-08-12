@@ -34,6 +34,7 @@
 #include "ncapacitybarplugin.h"
 #include "nhorizontalcomboboxplugin.h"
 #include "nlineeditplugin.h"
+#include "nlistviewplugin.h"
 #include "npushbuttonplugin.h"
 #include "nstorageiconlabelplugin.h"
 #include "ntimeprogressbarplugin.h"
@@ -46,6 +47,7 @@ Neux::Neux(QObject *parent)
     widgets.append(new NDateTimeLabelPlugin(this));
     widgets.append(new NHorizontalComboBoxPlugin(this));
     widgets.append(new NLineEditPlugin(this));
+    widgets.append(new NListViewPlugin(this));
     widgets.append(new NPushButtonPlugin(this));
     widgets.append(new NStorageIconLabelPlugin(this));
     widgets.append(new NTimeProgressBarPlugin(this));

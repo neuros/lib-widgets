@@ -7,5 +7,6 @@
         <file>osd.gif</file>
         <file>sd.png</file>
         <file>usb.png</file>
+        <file>grey-arrow-left.gif</file>	
     </qresource>
 </RCC>
