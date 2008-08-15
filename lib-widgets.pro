@@ -17,6 +17,7 @@ INCLUDEPATH +=	./tmp \
 		./src/edits \
 		./src/items \
 		./src/labels \
+		./src/menus \
 		./src/models \
 		./src/views
 
@@ -63,6 +64,8 @@ SOURCES +=	./src/bars/ncapacitybar.cpp \
 		./src/labels/ngradientlabel.cpp \
 		./src/labels/ndatetimelabel.cpp \
 		./src/labels/nstorageiconlabel.cpp \
+		./src/menus/naction.cpp \
+		./src/menus/nxim.cpp \
 		./src/models/nlistviewitem.cpp \
                 ./src/models/nlistviewmodel.cpp \
                 ./src/views/nlistview.cpp
@@ -76,6 +79,8 @@ HEADERS +=	./src/bars/ncapacitybar.h \
 		./src/labels/ngradientlabel.h \
 		./src/labels/ndatetimelabel.h \
 		./src/labels/nstorageiconlabel.h \
+		./src/menus/naction.h \
+		./src/menus/nxim.h \
 		./src/models/nlistviewitem.h \
                 ./src/models/nlistviewmodel.h \
                 ./src/views/nlistview.h
@@ -109,6 +114,7 @@ toolchain_include.files =./src/bars/*.h \
 			 ./src/edits/*.h \
 			 ./src/items/*.h \
 			 ./src/labels/*.h \
+			 ./src/menus/*.h \
 			 ./src/models/*.h \
                          ./src/views/*.h	
 				

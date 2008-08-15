@@ -7,6 +7,18 @@
         <file>osd.gif</file>
         <file>sd.png</file>
         <file>usb.png</file>
-        <file>grey-arrow-left.gif</file>	
+        <file>grey-arrow-left.gif</file>
+	<file>grey-arrow-up.gif</file>
+        <file>grey-arrow-down.gif</file>
+        <file>xim.gif</file>
+        <file>xim-bg-top-left.png</file>
+        <file>xim-bg-top-middle.png</file>
+        <file>xim-bg-top-right.png</file>
+        <file>xim-bg-middle-side.png</file>
+        <file>xim-bg-middle-middle.png</file>
+        <file>xim-bg-bottom.png</file>
+        <file>xim-cursor-left.png</file>
+        <file>xim-cursor-middle.png</file>
+        <file>xim-cursor-right.png</file>
     </qresource>
 </RCC>
