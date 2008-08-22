@@ -47,8 +47,8 @@ NListView::NListView(QWidget * parent)
     setItemDelegate(d->itemDelegate = new NItemDelegate(this));
     setItemWrapping(true);
     setTextAnimationPolicy(AsNeeded);
-    setLeftArrowEnable(true);
-    setRightIconEnable(true);
+    setLeftArrowEnable(false);
+    setRightIconEnable(false);
 
     QFontMetrics fm(font( ));
     setIconSize(QSize(fm.height( ), fm.height( )));
@@ -60,6 +60,9 @@ NListView::NListView(QWidget * parent)
     pal.setColor(QPalette::HighlightedText, Qt::white); // default text color for selected item text
     pal.setColor(QPalette::Foreground, Qt::white); // for hline color
     setPalette(pal);
+
+    /* connect signals and slots */
+    connect(&d->activeFlashTimer, SIGNAL(timeout( )), this, SLOT(onActiveFlashTimerOut( )));
 }
 
 NListView::~NListView( )
@@ -136,7 +139,7 @@ bool NListView::isLeftArrowEnable( ) const
 void NListView::setLeftArrowEnable(bool enable)
 { 
     d->itemDelegate->setLeftArrowEnable(enable);
-    updateCurrent( );  
+    updateCurrent( );
 }
 
 QSize NListView::leftArrowSize( ) const 
@@ -147,7 +150,7 @@ QSize NListView::leftArrowSize( ) const
 void NListView::setLeftArrowSize(const QSize &size) 
 { 
     d->itemDelegate->setLeftArrowSize(size);
-    updateCurrent( );  
+    updateCurrent( );
 }
 
 bool NListView::isRightIconEnable( ) const 
@@ -158,7 +161,7 @@ bool NListView::isRightIconEnable( ) const
 void NListView::setRightIconEnable(bool enable) 
 { 
     d->itemDelegate->setRightIconEnable(enable);
-    updateCurrent( );  
+    updateCurrent( );
 }
 
 QSize NListView::rightIconSize( ) const 
@@ -172,6 +175,15 @@ void NListView::setRightIconSize(const QSize &size)
     updateCurrent( );  
 }
 
+QRect NListView::visualRect(const QModelIndex &index) const
+{
+    if (index == rootIndex( ))
+        return QRect(viewport( )->rect( ).topLeft( ) += QPoint(spacing( ), spacing( )),
+                     itemDelegate( )->sizeHint(viewOptions( ), rootIndex( )));
+    else
+        return QListView::visualRect(index);
+}
+
 void NListView::onAnimationFrameChanged(int frame)
 {
     qDebug( ) << "NListView::onAnimationFrameChanged" << frame;
@@ -179,26 +191,22 @@ void NListView::onAnimationFrameChanged(int frame)
     viewport( )->update(visualRect(currentIndex( )));
 }
 
+void NListView::onActiveFlashTimerOut( )
+{
+    d->currentItemActived = false;
+    updateCurrent( );
+}
+
 void NListView::keyPressEvent(QKeyEvent *event)
 {
     if ((event->key( ) == Qt::Key_Enter) || (event->key( ) == Qt::Key_Right))
     {
         d->currentItemActived = true;
-        updateCurrent( );  
+        updateCurrent( );
+        d->activeFlashTimer.start( );
     }
 
     return QListView::keyPressEvent(event);
-}
-
-void NListView::keyReleaseEvent(QKeyEvent *event)
-{
-    if ((event->key( ) == Qt::Key_Enter) || (event->key( ) == Qt::Key_Right))
-    {
-        d->currentItemActived = false;
-        updateCurrent( );  
-    }
-
-    return QListView::keyReleaseEvent(event);
 }
 
 QModelIndex NListView::moveCursor ( CursorAction cursorAction, 
@@ -219,7 +227,7 @@ QModelIndex NListView::moveCursor ( CursorAction cursorAction,
         else
             nextRow = (isItemWrapping( ) ? rowCnt - 1 : currentRow);
 
-        if (nextRow + 1 ==  (rowCnt - verticalScrollBar( )->maximum( )) / 2 + verticalScrollBar( )->value( ))
+        if (nextRow + 1 ==  (rowCnt - verticalScrollBar( )->maximum( ))/2 + verticalScrollBar( )->value( ))
             verticalScrollBar( )->triggerAction(QAbstractSlider::SliderSingleStepSub);
 
         break;
@@ -230,7 +238,7 @@ QModelIndex NListView::moveCursor ( CursorAction cursorAction,
             nextRow = (isItemWrapping( ) ? 0 : currentRow);
 
         if (nextRow > (rowCnt - verticalScrollBar( )->maximum( ))/2 + verticalScrollBar()->value( ))
-            verticalScrollBar()->triggerAction(QAbstractSlider::SliderSingleStepAdd);
+            verticalScrollBar( )->triggerAction(QAbstractSlider::SliderSingleStepAdd);
 
         break;
     case QListView::MovePageUp:
@@ -258,7 +266,7 @@ QModelIndex NListView::moveCursor ( CursorAction cursorAction,
         }
         else if (verticalScrollBar( )->maximum( ) > verticalScrollBar()->value( ))
         {
-            verticalScrollBar()->triggerAction(QAbstractSlider::SliderPageStepAdd);
+            verticalScrollBar( )->triggerAction(QAbstractSlider::SliderPageStepAdd);
             nextRow = rowCnt - verticalScrollBar( )->maximum( ) + verticalScrollBar( )->value( ) - 1;
         }
         else if (verticalScrollBar( )->maximum( ) == verticalScrollBar( )->value( ))
@@ -266,6 +274,9 @@ QModelIndex NListView::moveCursor ( CursorAction cursorAction,
             verticalScrollBar( )->triggerAction(QAbstractSlider::SliderToMinimum);
             nextRow = 0;
         }
+        break;
+    case QListView::MoveLeft:
+    case QListView::MoveRight:
         break;
     default:
         nextRow = QListView::moveCursor(cursorAction, modifiers).row( );
@@ -324,8 +335,8 @@ void NListView::paintEvent(QPaintEvent *event)
             QStyleOptionViewItem option = viewOptions( );
             option.state |= QStyle::State_HasFocus;
             option.displayAlignment = Qt::AlignCenter;
-            option.rect.setSize(delegate->sizeHint(option, QModelIndex( )));
-            delegate->paint(&painter, option, QModelIndex( ));
+            option.rect = visualRect(rootIndex( ));
+            delegate->paint(&painter, option, rootIndex( ));
             delegate->drawDisplayExternal(&painter, option, option.rect, tr("No items to list"));
         }
 
@@ -360,6 +371,7 @@ NListViewPrivate::NListViewPrivate( )
 
     itemDelegate = NULL;
     currentItemActived = false;
+    activeFlashTimer.setInterval(150); //150ms
 }
 
 NListViewPrivate::~NListViewPrivate( )

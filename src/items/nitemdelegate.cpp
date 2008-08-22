@@ -252,17 +252,15 @@ void NItemDelegate::drawCursorBar(QPainter *painter, const QStyleOptionViewItem 
                                   const QModelIndex &index) const
 {
     Q_UNUSED(index)
-    QPainterPath pp = getCursorBarPath(option.rect.adjusted(6, 6, -6, -6));
-
     if (option.state & QStyle::State_Sunken)
     {
-		painter->fillPath(pp, QColor(0xe4, 0x5b, 0x00));
+		painter->fillPath(getCursorBarPath(option.rect), QColor(0xe4, 0x5b, 0x00));
     }
     else
     {
         painter->fillRect(option.rect.adjusted(6, 6, -6, -option.rect.height( )/2), QColor(64, 64, 64));
         painter->fillRect(option.rect.adjusted(6, option.rect.height( )/2, -6, -6), QColor(8, 8, 8));
-        painter->strokePath(pp, QPen(QColor(0xe4, 0x5b, 0x00).darker(125), 6)); // 6: the width of outline
+        painter->strokePath(getCursorBarPath(option.rect.adjusted(3, 3, -3, -3)), QPen(QColor(0xe4, 0x5b, 0x00).darker(125), 6)); // 6: the width of outline
     }
 }
 

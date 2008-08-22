@@ -60,7 +60,7 @@ public:
     enum TextAnimationPolicy { AlwaysOff = 0, AsNeeded };
 
     NListView(QWidget * parent = NULL);
-    ~NListView( );
+    virtual ~NListView( );
 
     TextAnimationPolicy textAnimationPolicy( ) const;
     void setTextAnimationPolicy(TextAnimationPolicy policy);
@@ -87,13 +87,14 @@ public:
     QSize rightIconSize( ) const;
     void setRightIconSize(const QSize &size);
 
+    virtual QRect visualRect(const QModelIndex &index) const;
+
 Q_SIGNALS:
     void currentRowChanged(int current, int previous);
 
 protected:
     virtual QStyleOptionViewItem viewOptions( ) const;
     virtual void keyPressEvent(QKeyEvent *event);
-    virtual void keyReleaseEvent(QKeyEvent *event);
     virtual QModelIndex moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers);
     virtual void resizeEvent(QResizeEvent *event);
     virtual void paintEvent(QPaintEvent *event);
@@ -101,6 +102,9 @@ protected:
 protected Q_SLOTS:
     virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous);
     virtual void onAnimationFrameChanged(int frame);
+
+private Q_SLOTS:
+    void onActiveFlashTimerOut( );
 
 private:
     void updateCurrent( );

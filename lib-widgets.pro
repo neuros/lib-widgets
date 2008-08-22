@@ -32,6 +32,7 @@ HEADERS +=	./designer-plugins/ncapacitybarplugin.h \
 		./designer-plugins/ndatetimelabelplugin.h \
 		./designer-plugins/nhorizontalcomboboxplugin.h \
 		./designer-plugins/npushbuttonplugin.h \
+		./designer-plugins/nribbonlistviewplugin.h \
 		./designer-plugins/nstorageiconlabelplugin.h \
 		./designer-plugins/ntimeprogressbarplugin.h \
 		./designer-plugins/neux.h
@@ -43,6 +44,7 @@ SOURCES +=	./designer-plugins/ncapacitybarplugin.cpp \
 		./designer-plugins/ndatetimelabelplugin.cpp \
 		./designer-plugins/nhorizontalcomboboxplugin.cpp \
 		./designer-plugins/npushbuttonplugin.cpp \
+		./designer-plugins/nribbonlistviewplugin.cpp \
 		./designer-plugins/nstorageiconlabelplugin.cpp \
 		./designer-plugins/ntimeprogressbarplugin.cpp \
 		./designer-plugins/neux.cpp
@@ -67,8 +69,10 @@ SOURCES +=	./src/bars/ncapacitybar.cpp \
 		./src/menus/naction.cpp \
 		./src/menus/nxim.cpp \
 		./src/models/nlistviewitem.cpp \
-                ./src/models/nlistviewmodel.cpp \
-                ./src/views/nlistview.cpp
+		./src/models/nlistviewmodel.cpp \
+		./src/views/nlistview.cpp \
+		./src/views/nribbonlistview.cpp
+
 #Header Files
 HEADERS +=	./src/bars/ncapacitybar.h \
 		./src/bars/ntimeprogressbar.h \
@@ -82,8 +86,9 @@ HEADERS +=	./src/bars/ncapacitybar.h \
 		./src/menus/naction.h \
 		./src/menus/nxim.h \
 		./src/models/nlistviewitem.h \
-                ./src/models/nlistviewmodel.h \
-                ./src/views/nlistview.h
+		./src/models/nlistviewmodel.h \
+		./src/views/nlistview.h \
+		./src/views/nribbonlistview.h
 
 #Form Files
 FORMS +=
@@ -116,7 +121,7 @@ toolchain_include.files =./src/bars/*.h \
 			 ./src/labels/*.h \
 			 ./src/menus/*.h \
 			 ./src/models/*.h \
-                         ./src/views/*.h	
+			 ./src/views/*.h
 				
 toolchain_lib.files = ./build/*.so.1.0.0
 toolchain_lib.extra = cp -a ./build/* /${TOOLCHAIN_USR_INSTALL}/lib

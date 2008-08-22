@@ -31,7 +31,7 @@
  */
 
 #include <QTimeLine>
-
+#include <QTimer>
 #include "nlistview.h"
 
 class NListViewPrivate
@@ -49,6 +49,8 @@ public:
 
     NItemDelegate *itemDelegate;
     bool currentItemActived;
+
+    QTimer activeFlashTimer;
 
 private:
 
