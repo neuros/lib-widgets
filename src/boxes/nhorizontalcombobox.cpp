@@ -46,6 +46,7 @@ NHorizontalComboBox::NHorizontalComboBox(QWidget *parent)
     setPalette(pal);
     setSizeAdjustPolicy(QComboBox::AdjustToContents);
     setWrapping(true);
+    setEditable(false);
     setPlayRole(PlayAsComboBox);
     setLineEditTransparent(true);
 }
