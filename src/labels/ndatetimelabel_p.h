@@ -33,6 +33,7 @@
 #include <QColor>
 #include <QTimer>
 #include <QDateTime>
+#include <QPainterPath>
 #include "ndatetimelabel.h"
 
 class NDateTimeLabelPrivate
@@ -41,6 +42,8 @@ public:
     NDateTimeLabelPrivate();
     ~NDateTimeLabelPrivate();
 
+    QPainterPath roundRectPath(const QRect &rect) const;
+
     QTimer refreshTimer;
     Qt::DateFormat dateTimeFormat;
     NDateTimeLabel::DisplayRole role;
@@ -48,6 +51,7 @@ public:
     QColor borderColor;
     QColor topColor;
     QColor bottomColor;
+    QPainterPath rectPath;
 
 private:
 

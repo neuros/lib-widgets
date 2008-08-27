@@ -73,7 +73,7 @@ public:
     void setDisplayRole(DisplayRole r);
     DisplayRole displayRole() const;
 
-    Q_SIGNALS:
+Q_SIGNALS:
     void datetimeUpdated(const QDateTime &current);
 
 public Q_SLOTS:
@@ -84,6 +84,7 @@ private Q_SLOTS:
     void OnRefreshTimerOut();
 
 protected:
+    void resizeEvent(QResizeEvent *event);
     void paintEvent(QPaintEvent *event);
 
 private:

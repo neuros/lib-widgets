@@ -140,22 +140,33 @@ void NDateTimeLabel::OnRefreshTimerOut()
     emit datetimeUpdated(current);
 }
 
+void NDateTimeLabel::resizeEvent(QResizeEvent *event)
+{
+    QLabel::resizeEvent(event);
+    d->rectPath = d->roundRectPath(rect());
+}
+
 void NDateTimeLabel::paintEvent(QPaintEvent *event)
 {
     QRect topRect(rect());
     QRect bottomRect(rect());
     topRect.setHeight(topRect.height()/2);
     bottomRect.setY(bottomRect.y() + bottomRect.height()/2);
+
+    QPainterPath topPath, bottomPath;
+    topPath.addRect(topRect);
+    bottomPath.addRect(bottomRect);
+
     QPainter painter;
     painter.begin(this);
-    painter.fillRect(topRect, QBrush(d->topColor));
-    painter.fillRect(bottomRect, QBrush(d->bottomColor));
+    painter.fillPath(d->rectPath.intersected(topPath), d->topColor);
+    painter.fillPath(d->rectPath.intersected(bottomPath), d->bottomColor);
 
     QPen borderPen(painter.pen());
     borderPen.setColor(d->borderColor);
     borderPen.setWidth(d->borderWidth);
     painter.setPen(borderPen);
-    painter.drawRoundRect(rect(), 15, 60);
+    painter.drawPath(d->rectPath);
     painter.end();
 
     QLabel::paintEvent(event);
@@ -177,3 +188,23 @@ NDateTimeLabelPrivate::NDateTimeLabelPrivate()
 NDateTimeLabelPrivate::~NDateTimeLabelPrivate()
 {
 }
+
+QPainterPath NDateTimeLabelPrivate::roundRectPath(const QRect &rect) const
+{
+    int radius = rect.height()/5;
+    int diam = 2*radius;
+    int x1, y1, x2, y2;
+    rect.getCoords(&x1, &y1, &x2, &y2);
+    QPainterPath path;
+    path.moveTo(x2, y1 + radius);
+    path.arcTo(QRect(x2 - diam, y1, diam, diam), 0.0, +90.0);
+    path.lineTo(x1 + radius, y1);
+    path.arcTo(QRect(x1, y1, diam, diam), 90.0, +90.0);
+    path.lineTo(x1, y2 - radius);
+    path.arcTo(QRect(x1, y2 - diam, diam, diam), 180.0, +90.0);
+    path.lineTo(x1 + radius, y2);
+    path.arcTo(QRect(x2 - diam, y2 - diam, diam, diam), 270.0, +90.0);
+    path.closeSubpath();
+    return path;
+}
+
