@@ -41,11 +41,19 @@
 NGradientLabel::NGradientLabel(QWidget *parent, Qt::WindowFlags f)
 : QLabel(parent, f), gradient(NoGradientPolicy), gradientStops(0)
 {
+    /* setup default gradient policy */
+    setGradientPolicy(DEFAULT_GRADIENT_POLICY);
+    setLinearColorStart(DEFAULT_LINEAR_COLOR_START);
+    setLinearColorStop(DEFAULT_LINEAR_COLOR_STOP);
 }
 
 NGradientLabel::NGradientLabel(const QString &text, QWidget *parent, Qt::WindowFlags f)
 : QLabel(text, parent, f), gradient(NoGradientPolicy), gradientStops(0)
 {
+    /* setup default gradient policy */
+    setGradientPolicy(DEFAULT_GRADIENT_POLICY);
+    setLinearColorStart(DEFAULT_LINEAR_COLOR_START);
+    setLinearColorStop(DEFAULT_LINEAR_COLOR_STOP);
 }
 
 void NGradientLabel::setGradientPolicy(GradientPolicy policy)
