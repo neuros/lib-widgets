@@ -35,6 +35,8 @@
 #include <QTimer>
 #include <QDateTime>
 
+class NDateTimeLabelPrivate;
+
 #if defined(DESIGNER)
 #include <QtDesigner/QDesignerExportWidget>
 class QDESIGNER_WIDGET_EXPORT NDateTimeLabel : public QLabel
@@ -57,38 +59,35 @@ public:
         DateOnly
     };
 
-    explicit NDateTimeLabel(QWidget *parent = 0, Qt::WindowFlags f = 0);
+    explicit NDateTimeLabel(QWidget *parent = NULL, Qt::WindowFlags f = 0);
+    ~NDateTimeLabel();
 
-    void refresh( ) { OnRefreshTimerOut( );}
+    void refresh();
 
-    void setRefreshInterval(int msec) { refreshTimer.setInterval(msec);}
-    int refreshInterval( ) const { return refreshTimer.interval( );}
+    void setRefreshInterval(int msec);
+    int refreshInterval() const;
+
     void setFormat(Qt::DateFormat format);
-    Qt::DateFormat format( ) const { return dateTimeFormat;}
-    void setDisplayRole(DisplayRole r);
-    DisplayRole displayRole( ) const { return role;}
+    Qt::DateFormat format() const;
 
-Q_SIGNALS:
+    void setDisplayRole(DisplayRole r);
+    DisplayRole displayRole() const;
+
+    Q_SIGNALS:
     void datetimeUpdated(const QDateTime &current);
 
 public Q_SLOTS:
-    void start( ) { refreshTimer.start( );}
-    void stop( ) { refreshTimer.stop( );}
+    void start();
+    void stop();
 
 private Q_SLOTS:
-    void OnRefreshTimerOut( );
+    void OnRefreshTimerOut();
 
 protected:
     void paintEvent(QPaintEvent *event);
 
 private:
-    QTimer refreshTimer;
-    Qt::DateFormat dateTimeFormat;
-    DisplayRole role;
-    int borderWidth;
-    QColor borderColor;
-    QColor topColor;
-    QColor bottomColor;
+    NDateTimeLabelPrivate *d;
 };
 
 #endif // _NDATETIMELABEL_H_

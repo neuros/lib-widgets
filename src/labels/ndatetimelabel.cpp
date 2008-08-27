@@ -32,62 +32,105 @@
 #include <QDebug>
 #include <QPainter>
 #include "ndatetimelabel.h"
+#include "ndatetimelabel_p.h"
 
 NDateTimeLabel::NDateTimeLabel(QWidget *parent, Qt::WindowFlags f)
-: QLabel(parent, f)
+: QLabel(parent, f), d(new NDateTimeLabelPrivate)
 {
-    setAlignment(Qt::AlignCenter);
-    setDisplayRole(TimeOnly);
-    setFormat(Qt::DefaultLocaleShortDate);
+    /* setup default value for NDateTimeLabel */
     setContentsMargins(15, 5, 15, 5);
+
     QPalette pal = palette();
     pal.setColor(QPalette::WindowText, Qt::white);
     setPalette(pal);
 
-    dateTimeFormat = Qt::TextDate;
-    role = DateAndTime;
-    borderWidth = 5;
-    borderColor = QColor(102, 102, 102);
-    topColor = QColor(64, 64, 64);
-    bottomColor = QColor(8 , 8, 8);
-    refreshTimer.setInterval(1000); //1s
-    connect(&refreshTimer, SIGNAL(timeout( )), this, SLOT(OnRefreshTimerOut( )));
-    refresh( );
-    start( );
+    setAlignment(Qt::AlignCenter);
+    setDisplayRole(TimeOnly);
+    setFormat(Qt::DefaultLocaleShortDate);
+
+    /* connect signals and slots */
+    connect(&d->refreshTimer, SIGNAL(timeout( )), this, SLOT(OnRefreshTimerOut( )));
+
+    refresh();
+    start();
+}
+
+NDateTimeLabel::~NDateTimeLabel()
+{
+    if (d != NULL)
+    {
+        delete d;
+        d = NULL;
+    }
+}
+
+Qt::DateFormat NDateTimeLabel::format() const
+{ 
+    return d->dateTimeFormat;
 }
 
 void NDateTimeLabel::setFormat(Qt::DateFormat format)
 {
-    if (format != dateTimeFormat)
-    {
-        dateTimeFormat = format;
-        refresh( );
-    }
+    if (format == d->dateTimeFormat)
+        return;
+
+    d->dateTimeFormat = format;
+    refresh();
+}
+
+NDateTimeLabel::DisplayRole NDateTimeLabel::displayRole() const
+{ 
+    return d->role;
 }
 
 void NDateTimeLabel::setDisplayRole(DisplayRole r)
 {
-    if (r != role)
-    {
-        role = r;
-        refresh( );
-    }
+    if (r == d->role)
+        return;
+
+    d->role = r;
+    refresh();
 }
 
-void NDateTimeLabel::OnRefreshTimerOut( )
+void NDateTimeLabel::setRefreshInterval(int msec)
+{ 
+    d->refreshTimer.setInterval(msec);
+}
+
+int NDateTimeLabel::refreshInterval() const
+{ 
+    return d->refreshTimer.interval();
+}
+
+void NDateTimeLabel::start()
+{ 
+    d->refreshTimer.start();
+}
+
+void NDateTimeLabel::stop()
+{ 
+    d->refreshTimer.stop();
+}
+
+void NDateTimeLabel::refresh()
+{ 
+    OnRefreshTimerOut();
+}
+
+void NDateTimeLabel::OnRefreshTimerOut()
 {
-    QDateTime current(QDateTime::currentDateTime( ));
+    QDateTime current(QDateTime::currentDateTime());
     QString currentText;
-    switch (role)
+    switch (d->role)
     {
     case DateAndTime:
-        currentText = current.toString(dateTimeFormat);
+        currentText = current.toString(d->dateTimeFormat);
         break;
     case TimeOnly:
-        currentText = current.time( ).toString(dateTimeFormat);
+        currentText = current.time().toString(d->dateTimeFormat);
         break;
     case DateOnly:
-        currentText = current.date( ).toString(dateTimeFormat);
+        currentText = current.date().toString(d->dateTimeFormat);
         break;
     default:
         break;
@@ -99,22 +142,38 @@ void NDateTimeLabel::OnRefreshTimerOut( )
 
 void NDateTimeLabel::paintEvent(QPaintEvent *event)
 {
-    QRect topRect(rect( ));
-    QRect bottomRect(rect( ));
-    topRect.setHeight(topRect.height( )/2);
-    bottomRect.setY(bottomRect.y( ) + bottomRect.height( )/2);
+    QRect topRect(rect());
+    QRect bottomRect(rect());
+    topRect.setHeight(topRect.height()/2);
+    bottomRect.setY(bottomRect.y() + bottomRect.height()/2);
     QPainter painter;
     painter.begin(this);
-    painter.fillRect(topRect, QBrush(topColor));
-    painter.fillRect(bottomRect, QBrush(bottomColor));
+    painter.fillRect(topRect, QBrush(d->topColor));
+    painter.fillRect(bottomRect, QBrush(d->bottomColor));
 
-    QPen borderPen(painter.pen( ));
-    borderPen.setColor(borderColor);
-    borderPen.setWidth(borderWidth);
+    QPen borderPen(painter.pen());
+    borderPen.setColor(d->borderColor);
+    borderPen.setWidth(d->borderWidth);
     painter.setPen(borderPen);
-    painter.drawRoundRect(rect( ), 15, 60);
-    painter.end( );
+    painter.drawRoundRect(rect(), 15, 60);
+    painter.end();
 
     QLabel::paintEvent(event);
 }
 
+
+
+NDateTimeLabelPrivate::NDateTimeLabelPrivate()
+{
+    dateTimeFormat = Qt::TextDate;
+    role = NDateTimeLabel::DateAndTime;
+    borderWidth = 5;
+    borderColor = QColor(102, 102, 102);
+    topColor = QColor(64, 64, 64);
+    bottomColor = QColor(8 , 8, 8);
+    refreshTimer.setInterval(1000); //1s
+}
+
+NDateTimeLabelPrivate::~NDateTimeLabelPrivate()
+{
+}
