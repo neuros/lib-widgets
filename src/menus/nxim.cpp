@@ -61,8 +61,8 @@ NXim::NXim(QWidget *parent)
 {
     setTitle(tr("Options"));
     QPalette pal = palette( );
-    pal.setBrush(QPalette::Highlight, QBrush( ));
-    pal.setBrush(QPalette::Button, QBrush( ));
+    pal.setBrush(QPalette::Highlight, QBrush( )); //Disable the highlight item brush
+    pal.setBrush(QPalette::Button, QBrush( )); //Disable the non-highlight item brush
     setPalette(pal);
 }
 
@@ -71,8 +71,8 @@ NXim::NXim(const QString &title, QWidget *parent)
 {
     setTitle(tr("Options"));
     QPalette pal = palette( );
-    pal.setBrush(QPalette::Highlight, QBrush( ));
-    pal.setBrush(QPalette::Button, QBrush( ));
+    pal.setBrush(QPalette::Highlight, QBrush( )); //Disable the highlight item brush
+    pal.setBrush(QPalette::Button, QBrush( )); //Disable the non-highlight item brush
     setPalette(pal);
 }
 
@@ -90,7 +90,6 @@ void NXim::showEvent(QShowEvent *event)
     QMenu::showEvent(event);
     int previousIndex = d->topItemIndex + d->currentItemIndex;
     int currentIndex = d->actionList.indexOf(activeAction( ));
-    qDebug( ) << previousIndex << currentIndex;
 
     if ((currentIndex != -1) && (currentIndex != previousIndex)) //Has active action, and it isn't the previous index
     {
@@ -244,6 +243,7 @@ void NXim::paintEvent(QPaintEvent *event)
     {
         QStyleOptionMenuItem menuOpt;
         menuOpt.initFrom(this);
+        menuOpt.type = QStyleOption::SO_MenuItem;
         menuOpt.palette = palette( );
         menuOpt.state = QStyle::State_None;
         menuOpt.checkType = QStyleOptionMenuItem::NotCheckable;
