@@ -33,8 +33,10 @@
 #include <QComboBox>
 #include <QStringList>
 
+class NHorizontalComboBoxPrivate;
+
 #if defined(DESIGNER)
-#include <QtDesigner/QDesignerExportWidget>
+    #include <QtDesigner/QDesignerExportWidget>
 class QDESIGNER_WIDGET_EXPORT NHorizontalComboBox : public QComboBox
 #else
 class NHorizontalComboBox : public QComboBox
@@ -47,31 +49,31 @@ class NHorizontalComboBox : public QComboBox
     Q_PROPERTY(bool lineEditTransparent READ isLineEditTransparent WRITE setLineEditTransparent)
 
 public:
-    enum PlayRole { PlayAsComboBox = 0, PlayAsSpinBox };
+    enum PlayRole
+    {
+        PlayAsComboBox = 0, PlayAsSpinBox
+    };
 
-	explicit NHorizontalComboBox(QWidget *parent = NULL);
+    explicit NHorizontalComboBox(QWidget *parent = NULL);
 
-    PlayRole playRole( ) const { return role; }
+    PlayRole playRole() const;
     void setPlayRole(PlayRole pr);
 
-    bool isWrapping( ) const { return wrapping; }
-    void setWrapping(bool w) { wrapping = w; }
+    bool isWrapping() const;
+    void setWrapping(bool w);
 
-    bool isLineEditTransparent( ) const;
+    bool isLineEditTransparent() const;
     void setLineEditTransparent(bool transparent);
-
-    QSize sizeHint() const;
 
 protected:
     void keyPressEvent(QKeyEvent *e);
+    void paintEvent(QPaintEvent *e);
 
 private:
     QStringList createNumericTexts(int from, int to) const;
 
 private:
-    PlayRole role;
-    bool wrapping;
-    QColor editorBackgroundColor;
+    NHorizontalComboBoxPrivate *d;
 };
 
 #endif // _NHORIZONTALCOMBOBOX_H_
