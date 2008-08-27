@@ -33,6 +33,8 @@
 #include <QLabel>
 #include <QColor>
 
+class NGradientLabelPrivate;
+
 /*
  * 'QDESIGNER_WIDGET_EXPORT' macro is used when defining custom widgets 
  * to ensure that they are correctly exported from plugins for use with Qt Designer.
@@ -73,11 +75,12 @@ public:
         LinearGradientVertical
     };
 
-    explicit NGradientLabel(QWidget *parent = 0, Qt::WindowFlags f = 0);
-    explicit NGradientLabel(const QString &text, QWidget *parent = 0, Qt::WindowFlags f = 0);
+    explicit NGradientLabel(QWidget *parent = NULL, Qt::WindowFlags f = 0);
+    explicit NGradientLabel(const QString &text, QWidget *parent = NULL, Qt::WindowFlags f = 0);
+    ~NGradientLabel();
 
     void setGradientPolicy(GradientPolicy policy);
-    GradientPolicy gradientPolicy( ) const { return gradient;}
+    GradientPolicy gradientPolicy( ) const;
 
     void setLinearColorStart(const QColor &start);
     void setLinearColorStop(const QColor &stop);
@@ -95,8 +98,7 @@ private:
     QRect textRectangle( ) const;
 
 private:
-    GradientPolicy gradient;
-    QGradientStops gradientStops;
+    NGradientLabelPrivate *d;
 };
 
 #endif // _NGRADIENTLABEL_H_

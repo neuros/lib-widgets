@@ -33,13 +33,14 @@
 #include <QLinearGradient>
 #include <QPainter>
 #include "ngradientlabel.h"
+#include "ngradientlabel_p.h"
 
 #define DEFAULT_GRADIENT_POLICY (NGradientLabel::LinearGradientVertical)
 #define DEFAULT_LINEAR_COLOR_START (QColor(0xFF,0xFF,0xFF))
 #define DEFAULT_LINEAR_COLOR_STOP (QColor(0x4,0x4,0x4))
 
 NGradientLabel::NGradientLabel(QWidget *parent, Qt::WindowFlags f)
-: QLabel(parent, f), gradient(NoGradientPolicy), gradientStops(0)
+: QLabel(parent, f), d(new NGradientLabelPrivate)
 {
     /* setup default gradient policy */
     setGradientPolicy(DEFAULT_GRADIENT_POLICY);
@@ -48,7 +49,7 @@ NGradientLabel::NGradientLabel(QWidget *parent, Qt::WindowFlags f)
 }
 
 NGradientLabel::NGradientLabel(const QString &text, QWidget *parent, Qt::WindowFlags f)
-: QLabel(text, parent, f), gradient(NoGradientPolicy), gradientStops(0)
+: QLabel(text, parent, f), d(new NGradientLabelPrivate)
 {
     /* setup default gradient policy */
     setGradientPolicy(DEFAULT_GRADIENT_POLICY);
@@ -56,63 +57,75 @@ NGradientLabel::NGradientLabel(const QString &text, QWidget *parent, Qt::WindowF
     setLinearColorStop(DEFAULT_LINEAR_COLOR_STOP);
 }
 
+NGradientLabel::~NGradientLabel()
+{
+    if (d != NULL)
+    {
+        delete d;
+        d = NULL;
+    }
+}
+
+NGradientLabel::GradientPolicy NGradientLabel::gradientPolicy( ) const
+{ 
+    return d->gradient;
+}
+
 void NGradientLabel::setGradientPolicy(GradientPolicy policy)
 {
-    if (policy != gradientPolicy( ))
+    if (policy == d->gradient)
+        return;
+
+    switch (policy)
     {
-        switch (policy)
+    case LinearGradientHorizontal:
+    case LinearGradientVertical:
+        if (!isLinearPolicy(d->gradient))
         {
-        case LinearGradientHorizontal:
-        case LinearGradientVertical:
-            if (!isLinearPolicy(gradientPolicy( )))
-            {
-                gradientStops.clear( );
-                gradientStops.resize(2); //one for start, one for stop
-            }
-            break;
-        case NoGradientPolicy:
-            gradientStops.clear( );
-        default:
-            break;
+            d->gradientStops.clear( );
+            d->gradientStops.resize(2); //one for start, one for stop
         }
-
-        // Update the gradient policy
-        gradient = policy;
-
-        update( );
+        break;
+    case NoGradientPolicy:
+        d->gradientStops.clear( );
+    default:
+        break;
     }
+
+    d->gradient = policy;
+    update( );
 }
 
 void NGradientLabel::setLinearColorStart(const QColor &start)
 {
-    if (isLinearPolicy(gradientPolicy( )) && (linearColorStart( ) != start))
+    if (isLinearPolicy(d->gradient) && (start != d->gradientStops.first( ).second))
     {
-        gradientStops.first( ) = QGradientStop(0, start);
+        d->gradientStops.first( ) = QGradientStop(0, start);
         update( );
     }
 }
 
 void NGradientLabel::setLinearColorStop(const QColor &stop)
 {
-    if (isLinearPolicy(gradientPolicy( )) && (linearColorStop( ) != stop))
+    if (isLinearPolicy(d->gradient) && (stop != d->gradientStops.last( ).second))
     {
-        gradientStops.last( ) = QGradientStop(1, stop);
+        d->gradientStops.last( ) = QGradientStop(1, stop);
         update( );
     }
 }
 
 QColor NGradientLabel::linearColorStart( ) const
 {
-    if (isLinearPolicy(gradientPolicy( )))
-        return gradientStops.first( ).second;
+    if (isLinearPolicy(d->gradient))
+        return d->gradientStops.first( ).second;
     else
         return QColor( );
 }
 
 QColor NGradientLabel::linearColorStop( ) const
 {
-    if (isLinearPolicy(gradientPolicy( )))
-        return gradientStops.last( ).second;
+    if (isLinearPolicy(d->gradient))
+        return d->gradientStops.last( ).second;
     else
         return QColor( );
 }
@@ -120,7 +133,7 @@ QColor NGradientLabel::linearColorStop( ) const
 void NGradientLabel::paintEvent(QPaintEvent *event)
 {
     QLabel::paintEvent(event);
-    if (NoGradientPolicy == gradientPolicy( ))
+    if (NoGradientPolicy == d->gradient)
         return;
 
     //FIXME: style paint ?
@@ -128,10 +141,11 @@ void NGradientLabel::paintEvent(QPaintEvent *event)
     //FIXME: word wrap, Qt hasn't yet supported QPainter to draw gradient text on Qt-embedded-4.4.0, 
     //             use QPainterPath to draw the gradient text, but, QPainterPath is unable to word wrap.
 
-    if (isLinearPolicy(gradientPolicy( )))
+    if (isLinearPolicy(d->gradient))
     {
-        QLinearGradient gradient(contentsRect( ).topLeft( ), LinearGradientHorizontal == gradientPolicy( ) ? contentsRect( ).topRight( ) : contentsRect( ).bottomLeft( ));
-        gradient.setStops(gradientStops);
+        QLinearGradient gradient(contentsRect( ).topLeft( ),
+                                 LinearGradientHorizontal == d->gradient ? contentsRect( ).topRight( ) : contentsRect( ).bottomLeft( ));
+        gradient.setStops(d->gradientStops);
 
         QPainterPath pp;
         pp.addText(textRectangle( ).topLeft( ), font( ), text( ));
@@ -172,5 +186,18 @@ bool NGradientLabel::isLinearPolicy(GradientPolicy policy) const
 {
     return((LinearGradientHorizontal == policy) || (LinearGradientVertical == policy));
 }
+
+
+
+
+NGradientLabelPrivate::NGradientLabelPrivate()
+: gradient(NGradientLabel::NoGradientPolicy), gradientStops(0)
+{
+}
+
+NGradientLabelPrivate::~NGradientLabelPrivate()
+{
+}
+
 
 
