@@ -36,6 +36,14 @@
 NDateTimeLabel::NDateTimeLabel(QWidget *parent, Qt::WindowFlags f)
 : QLabel(parent, f)
 {
+    setAlignment(Qt::AlignCenter);
+    setDisplayRole(TimeOnly);
+    setFormat(Qt::DefaultLocaleShortDate);
+    setContentsMargins(15, 5, 15, 5);
+    QPalette pal = palette();
+    pal.setColor(QPalette::WindowText, Qt::white);
+    setPalette(pal);
+
     dateTimeFormat = Qt::TextDate;
     role = DateAndTime;
     borderWidth = 5;
