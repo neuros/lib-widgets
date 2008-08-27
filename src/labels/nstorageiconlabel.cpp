@@ -31,6 +31,7 @@
 //#define QT_NO_DEBUG_OUTPUT
 #include <QDebug>
 #include "nstorageiconlabel.h"
+#include "nstorageiconlabel_p.h"
 
 #define ICON_OSD (":/neux/osd.gif")
 #define ICON_CF (":/neux/cf.gif")
@@ -41,19 +42,33 @@
 #define ICON_USB (":/neux/usb.png")
 
 NStorageIconLabel::NStorageIconLabel(QWidget *parent, Qt::WindowFlags f)
-: QLabel(parent, f)
+: QLabel(parent, f), d(new NStorageIconLabelPrivate)
 {
     setIcon(IconNone);
 }
 
+NStorageIconLabel::~NStorageIconLabel()
+{
+    if (d != NULL)
+    {
+        delete d;
+        d = NULL;
+    }
+}
+
+NStorageIconLabel::Icon NStorageIconLabel::icon() const
+{ 
+    return d->storageIcon;
+}
+
 void NStorageIconLabel::setIcon(Icon icon)
 {
-	if(icon == storageIcon)
+    if (icon == d->storageIcon)
         return;
 
-    storageIcon = icon;
+    d->storageIcon = icon;
     QString iconName;
-    switch (storageIcon)
+    switch (d->storageIcon)
     {
     case IconOSD:
         iconName = ICON_OSD;
@@ -90,3 +105,13 @@ void NStorageIconLabel::setIcon(Icon icon)
         clear( );
 }
 
+
+
+NStorageIconLabelPrivate::NStorageIconLabelPrivate()
+{
+    storageIcon = NStorageIconLabel::IconNone;
+}
+
+NStorageIconLabelPrivate::~NStorageIconLabelPrivate()
+{
+}

@@ -1,5 +1,5 @@
-#ifndef _NSTORAGEICONLABEL_H_
-#define _NSTORAGEICONLABEL_H_
+#ifndef _NSTORAGEICONLABEL_P_H_
+#define _NSTORAGEICONLABEL_P_H_
 /*
  *  Copyright(C) 2007 Neuros Technology International LLC. 
  *               <www.neurostechnology.com>
@@ -22,46 +22,26 @@
  *
  ****************************************************************************
  *
- * NStorageIconLabel implement header.
+ * NStorageIconLabelPrivate header.
  *
  * REVISION:
  * 
- * 2) Import to OSD20. ----------------------------------- 2008-07-22 WX
- * 1) Initial creation. ----------------------------------- 2007-12-19 GL
+ * 1) Initial creation. ----------------------------------- 2008-08-27 WX
  *
  */
 
-#include <QLabel>
-#include <QResizeEvent>
-#include <QPixmap>
+#include "nstorageiconlabel.h"
 
-class NStorageIconLabelPrivate;
-
-#if defined(DESIGNER)
-#include <QtDesigner/QDesignerExportWidget>
-class QDESIGNER_WIDGET_EXPORT NStorageIconLabel : public QLabel
-#else
-class NStorageIconLabel : public QLabel
-#endif
+class NStorageIconLabelPrivate
 {
-    Q_OBJECT
-    Q_ENUMS(Icon)
-    Q_PROPERTY(Icon storageIcon READ icon WRITE setIcon)
-
 public:
-    enum Icon
-    {
-        IconNone = 0, IconOSD, IconCF, IconMD, IconMMC, IconMS, IconSD, IconUSB
-    };
+    NStorageIconLabelPrivate();
+    ~NStorageIconLabelPrivate();
 
-    NStorageIconLabel(QWidget *parent = NULL, Qt::WindowFlags f = 0);
-    ~NStorageIconLabel();
-
-    void setIcon (Icon icon);
-    Icon icon() const;
+    NStorageIconLabel::Icon storageIcon;
 
 private:
-    NStorageIconLabelPrivate *d;
+
 };
 
-#endif // _NSTORAGEICONLABEL_H_
+#endif // _NSTORAGEICONLABEL_P_H_
