@@ -32,7 +32,8 @@
  */
 
 #include <QItemDelegate>
-#include "nitemdelegate_p.h"
+
+class NItemDelegatePrivate;
 
 class NItemDelegate : public QItemDelegate
 {

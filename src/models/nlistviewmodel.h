@@ -32,8 +32,9 @@
 
 #include <QAbstractListModel>
 #include <QList>
-#include "nlistviewmodel_p.h"
 #include "nlistviewitem.h"
+
+class NListViewModelPrivate;
 
 class NListViewModel : public QAbstractListModel
 {

@@ -36,6 +36,7 @@
 #include "nitemdelegate.h"
 #include "nlistviewitem.h"
 #include "nlistview.h"
+#include "nitemdelegate_p.h"
 
 #define ARROW_ICON_LEFT  ":/neux/grey-arrow-left.gif"
 

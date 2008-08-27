@@ -31,6 +31,7 @@
 //#define QT_NO_DEBUG_OUTPUT
 #include <QDebug>
 #include "nlistviewitem.h"
+#include "nlistviewitem_p.h"
 
 NListViewItem::NListViewItem( )
 : d(new NListViewItemPrivate)

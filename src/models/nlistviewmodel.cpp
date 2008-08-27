@@ -31,6 +31,7 @@
 //#define QT_NO_DEBUG_OUTPUT
 #include <QDebug>
 #include "nlistviewmodel.h"
+#include "nlistviewmodel_p.h"
 
 NListViewModel::NListViewModel(QObject *parent)
 : QAbstractListModel(parent), d(new NListViewModelPrivate)

@@ -35,7 +35,7 @@
 #include <QIcon>
 #include <QVariant>
 
-#include "nlistviewitem_p.h"
+class NListViewItemPrivate;
 
 class NListViewItem
 {
