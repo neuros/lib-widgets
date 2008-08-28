@@ -33,7 +33,7 @@
 #include "nlistviewitem.h"
 #include "nlistviewitem_p.h"
 
-NListViewItem::NListViewItem( )
+NListViewItem::NListViewItem()
 : d(new NListViewItemPrivate)
 {
 }
@@ -58,11 +58,11 @@ NListViewItem::NListViewItem(const QString &icon, const QString &text, const QSt
 NListViewItem::NListViewItem(const NListViewItem &other)
 : d(new NListViewItemPrivate)
 {
-    d->itemIcon = other.icon( );
-    d->itemText = other.text( );
-    d->itemNavIcon = other.navigationIcon( );
-    d->itemTextColor = other.textColor( );
-    d->itemHLine = other.hline( );
+    d->itemIcon = other.icon();
+    d->itemText = other.text();
+    d->itemNavIcon = other.navigationIcon();
+    d->itemTextColor = other.textColor();
+    d->itemHLine = other.hline();
 }
 
 NListViewItem::~NListViewItem()
@@ -79,19 +79,19 @@ void NListViewItem::setData(int role, const QVariant &value)
     switch (role)
     {
     case DisplayRole:
-        d->itemText = value.toString( );
+        d->itemText = value.toString();
         break;
     case IconRole:
-        d->itemIcon = value.toString( );
+        d->itemIcon = value.toString();
         break;
     case NavigationIconRole:
-        d->itemNavIcon = value.toString( );
+        d->itemNavIcon = value.toString();
         break;
     case TextColorRole:
         d->itemTextColor = qvariant_cast<QColor>(value);
         break;
     case HLineRole:
-        d->itemHLine = value.toBool( );
+        d->itemHLine = value.toBool();
         break;
     default:
         break;
@@ -116,17 +116,17 @@ QVariant NListViewItem::data(int role) const
         break;
     }
 
-    return QVariant( );
+    return QVariant();
 }
 
 
 
 
-NListViewItemPrivate::NListViewItemPrivate( )
-: itemText(""), itemIcon(""), itemNavIcon(""), itemTextColor(QColor( )), itemHLine(false)
+NListViewItemPrivate::NListViewItemPrivate()
+: itemText(""), itemIcon(""), itemNavIcon(""), itemTextColor(QColor()), itemHLine(false)
 {
 }
 
-NListViewItemPrivate::~NListViewItemPrivate( )
+NListViewItemPrivate::~NListViewItemPrivate()
 {
 }

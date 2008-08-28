@@ -1,5 +1,5 @@
-#ifndef _NLISTVIEWMODEL_P_H_
-#define _NLISTVIEWMODEL_P_H_
+#ifndef _NMENUITEMMODEL_P_H_
+#define _NMENUITEMMODEL_P_H_
 /*
  *  Copyright(C) 2007 Neuros Technology International LLC. 
  *               <www.neurostechnology.com>
@@ -22,29 +22,29 @@
  *
  ****************************************************************************
  *
- * NListViewModelPrivate header.
+ * NMenuItemModel implement header.
  *
  * REVISION:
  * 
- * 1) Initial creation. ----------------------------------- 2008-08-06 WX
+ * 1) Initial creation. ----------------------------------- 2007-11-27 SZ
  *
  */
 
-#include "nlistviewitem.h"
+#include "nmenuitem.h"
 
-class NListViewModelPrivate
+class NMenuItemModelPrivate
 {
 
 public:
-    NListViewModelPrivate();
-    ~NListViewModelPrivate();
+    NMenuItemModelPrivate();
+    ~NMenuItemModelPrivate();
 
     void clear();
 
-    QList<NListViewItem *> modelDatas;
+    QList<NMenuItem *> modelDatas;
 
 private:
 
 };
 
-#endif // _NLISTVIEWMODEL_P_H_
+#endif // _NMENUITEMMODEL_P_H_

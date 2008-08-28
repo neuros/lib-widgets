@@ -50,37 +50,37 @@ public:
         HLineRole = Qt::UserRole + 3
     };
 
-    NListViewItem( );
+    NListViewItem();
     explicit NListViewItem(const QString &text);
     explicit NListViewItem(const QString &icon, const QString &text, const QString &navIcon,
-                           const QColor &color = QColor( ), bool hline = false, Qt::ItemFlags flags = Qt::NoItemFlags);
+                           const QColor &color = QColor(), bool hline = false, Qt::ItemFlags flags = Qt::NoItemFlags);
     NListViewItem(const NListViewItem &other);
-    virtual ~NListViewItem( );
+    virtual ~NListViewItem();
 
-    virtual NListViewItem *clone( ) const { return new NListViewItem(*this); }
+    virtual NListViewItem *clone() const { return new NListViewItem(*this); }
 
-    inline QString text( ) const
+    inline QString text() const
     { return data(DisplayRole).toString(); }
     inline void setText(const QString &atext)
     { setData(DisplayRole, atext); }
 
-    inline QString icon( ) const
-    { return data(IconRole).toString( ); }
+    inline QString icon() const
+    { return data(IconRole).toString(); }
     inline void setIcon(const QString &aicon)
     { setData(IconRole, aicon); }
 
-    inline QString navigationIcon( ) const
-    { return data(NavigationIconRole).toString( ); }
+    inline QString navigationIcon() const
+    { return data(NavigationIconRole).toString(); }
     inline void setNavigationIcon(const QString &aicon)
     { setData(NavigationIconRole, aicon); }
     
-    inline QColor textColor( ) const
+    inline QColor textColor() const
     { return qvariant_cast<QColor>(data(TextColorRole)); }
     inline void setTextColor(const QColor &color)
     { setData(TextColorRole, color); }
 
-    inline bool hline( ) const
-    { return (data(HLineRole).toBool( )); }
+    inline bool hline() const
+    { return (data(HLineRole).toBool()); }
     inline void setHLine(bool hl)
     { setData(HLineRole, hl); }
 

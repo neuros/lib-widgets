@@ -70,6 +70,8 @@ SOURCES +=	./src/bars/ncapacitybar.cpp \
 		./src/menus/nxim.cpp \
 		./src/models/nlistviewitem.cpp \
 		./src/models/nlistviewmodel.cpp \
+		./src/models/nmenuitem.cpp \
+		./src/models/nmenuitemmodel.cpp \
 		./src/views/nlistview.cpp \
 		./src/views/nribbonlistview.cpp
 
@@ -87,6 +89,8 @@ HEADERS +=	./src/bars/ncapacitybar.h \
 		./src/menus/nxim.h \
 		./src/models/nlistviewitem.h \
 		./src/models/nlistviewmodel.h \
+		./src/models/nmenuitem.h \
+		./src/models/nmenuitemmodel.h \
 		./src/views/nlistview.h \
 		./src/views/nribbonlistview.h
 

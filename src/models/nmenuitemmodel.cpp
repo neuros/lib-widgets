@@ -20,25 +20,25 @@
  *
  ****************************************************************************
  *
- * NListViewModel implement routines.
+ * MenuItemModel implement routines.
  *
  * REVISION:
  * 
- * 1) Initial creation. ----------------------------------- 2008-07-25 WX
+ * 1) Initial creation. ----------------------------------- 2007-11-27 SZ
  *
  */
 
 //#define QT_NO_DEBUG_OUTPUT
 #include <QDebug>
-#include "nlistviewmodel.h"
-#include "nlistviewmodel_p.h"
+#include "nmenuitemmodel.h"
+#include "nmenuitemmodel_p.h"
 
-NListViewModel::NListViewModel(QObject *parent)
-: QAbstractListModel(parent), d(new NListViewModelPrivate)
+NMenuItemModel::NMenuItemModel(QObject *parent)
+: QAbstractListModel(parent), d(new NMenuItemModelPrivate)
 {
 }
 
-NListViewModel::~NListViewModel()
+NMenuItemModel::~NMenuItemModel()
 {
     if (NULL != d)
     {
@@ -47,28 +47,28 @@ NListViewModel::~NListViewModel()
     }
 }
 
-void NListViewModel::clear()
+void NMenuItemModel::clear()
 {
     d->clear();
     reset();
 }
 
-bool NListViewModel::appendRow(NListViewItem *item)
+bool NMenuItemModel::appendRow(NMenuItem *item)
 {
-    return insertRows(rowCount(), QList<NListViewItem *>() << item);
+    return insertRows(rowCount(), QList<NMenuItem *>() << item);
 }
 
-bool NListViewModel::appendRows(const QList<NListViewItem *> &items)
+bool NMenuItemModel::appendRows(const QList<NMenuItem *> &items)
 {
     return insertRows(rowCount(), items);
 }
 
-bool NListViewModel::insertRow(int row,  NListViewItem *item)
+bool NMenuItemModel::insertRow(int row,  NMenuItem *item)
 {
-    return insertRows(row, QList<NListViewItem *>() << item);
+    return insertRows(row, QList<NMenuItem *>() << item);
 }
 
-bool NListViewModel::insertRows(int row, const QList<NListViewItem *> &items)
+bool NMenuItemModel::insertRows(int row, const QList<NMenuItem *> &items)
 {
     if (row < 0 || row > rowCount())
         return false;
@@ -81,12 +81,12 @@ bool NListViewModel::insertRows(int row, const QList<NListViewItem *> &items)
     return true;
 }
 
-bool NListViewModel::removeRow(int row)
+bool NMenuItemModel::removeRow(int row)
 {
     return removeRows(row, 1);
 }
 
-bool NListViewModel::removeRows(int row, int count)
+bool NMenuItemModel::removeRows(int row, int count)
 {
     if (count < 1 || row < 0 || row >= rowCount())
         return false;
@@ -95,22 +95,21 @@ bool NListViewModel::removeRows(int row, int count)
         count = rowCount() - row;
 
     beginRemoveRows(QModelIndex(), row, row + count - 1);
-    while ((count --) > 0) {
+    while ((count --) > 0)
         delete d->modelDatas.takeAt(row);
-    }
     endRemoveRows();
     return true;
 }
 
-int NListViewModel::rowCount(const QModelIndex &parent) const
+int NMenuItemModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
 
-	return d->modelDatas.count();
+    return d->modelDatas.count();
 }
 
-QVariant NListViewModel::data(const QModelIndex &index, int role) const
+QVariant NMenuItemModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid() || index.row() >= d->modelDatas.count())
         return QVariant();
@@ -120,17 +119,20 @@ QVariant NListViewModel::data(const QModelIndex &index, int role) const
 
 
 
-NListViewModelPrivate::NListViewModelPrivate()
+
+NMenuItemModelPrivate::NMenuItemModelPrivate()
 {
 }
 
-NListViewModelPrivate::~NListViewModelPrivate()
+NMenuItemModelPrivate::~NMenuItemModelPrivate()
 {
     clear();
 }
 
-void NListViewModelPrivate::clear()
+void NMenuItemModelPrivate::clear()
 {
     qDeleteAll(modelDatas);
     modelDatas.clear();
 }
+
+

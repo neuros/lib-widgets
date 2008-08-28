@@ -36,6 +36,8 @@
 #include <QKeyEvent>
 #include <QPaintEvent>
 #include <QWidgetAction>
+#include <QApplication>
+#include <QDesktopWidget>
 #include "nxim.h"
 #include "nxim_p.h"
 
@@ -59,30 +61,31 @@
 NXim::NXim(QWidget *parent)
 : QMenu(parent), d(new NXimPrivate)
 {
-    setTitle(tr("Options"));
-    QPalette pal = palette( );
-    pal.setBrush(QPalette::Highlight, QBrush( )); //Disable the highlight item brush
-    pal.setBrush(QPalette::Button, QBrush( )); //Disable the non-highlight item brush
-    setPalette(pal);
+    init();
 }
 
 NXim::NXim(const QString &title, QWidget *parent)
 : QMenu(title, parent), d(new NXimPrivate)
 {
-    setTitle(tr("Options"));
-    QPalette pal = palette( );
-    pal.setBrush(QPalette::Highlight, QBrush( )); //Disable the highlight item brush
-    pal.setBrush(QPalette::Button, QBrush( )); //Disable the non-highlight item brush
-    setPalette(pal);
+    init();
 }
 
-NXim::~NXim( )
+NXim::~NXim()
 {
     if (d != NULL)
     {
         delete d;
         d = NULL;
     }
+}
+
+void NXim::init()
+{
+    setTitle(tr("Options"));
+    QPalette pal = palette();
+    pal.setBrush(QPalette::Highlight, QBrush()); //Disable the highlight item brush
+    pal.setBrush(QPalette::Button, QBrush()); //Disable the non-highlight item brush
+    setPalette(pal);
 }
 
 void NXim::showEvent(QShowEvent *event)
@@ -106,11 +109,23 @@ void NXim::showEvent(QShowEvent *event)
         d->topItemIndex = 0;
         setActiveAction(d->actionList.at(0));
     }
+
+    /* setup the default position */
+    QRect screenRect;
+    QWidget* par = parentWidget();
+    if (par != NULL)
+        screenRect = par->geometry();
+    else
+        screenRect = QApplication::desktop()->geometry();
+
+    // move to the center of screen
+    move(screenRect.x() + (screenRect.width() - this->width())/2,
+         screenRect.y() + (screenRect.height() - this->height())/2);
 }
 
 void NXim::keyPressEvent(QKeyEvent *event)
 {
-    switch (event->key( ))
+    switch (event->key())
     {
     case Qt::Key_Up:
         if (d->topItemIndex + d->currentItemIndex == 0) // current is the first item
@@ -129,7 +144,7 @@ void NXim::keyPressEvent(QKeyEvent *event)
         }
 
         setActiveAction(d->actionList.at(d->topItemIndex + d->currentItemIndex));
-        update( );
+        update();
         break;
     case Qt::Key_Down:
         if (d->topItemIndex + d->currentItemIndex == (d->actionList.count( ) - 1)) // current is the last item
@@ -148,7 +163,7 @@ void NXim::keyPressEvent(QKeyEvent *event)
         }
 
         setActiveAction(d->actionList.at(d->topItemIndex + d->currentItemIndex));
-        update( );
+        update();
         break;
     default:
         return QMenu::keyPressEvent(event);
@@ -156,13 +171,13 @@ void NXim::keyPressEvent(QKeyEvent *event)
     }
 }
 
-QSize NXim::sizeHint( ) const
+QSize NXim::sizeHint() const
 {
-    d->actionList = getVisibleActions( );
+    d->actionList = getVisibleActions();
     QSize size;
-    size.setWidth(QMenu::sizeHint( ).width( ));
+    size.setWidth(QMenu::sizeHint().width());
     size.setHeight(d->topHeight
-                   + (d->needScroll ? 2*d->arrowSize.height( ) : 0)
+                   + (d->needScroll ? 2*d->arrowSize.height() : 0)
                    + 2*XIM_ITEM_ARROW_SPACING
                    + (d->needScroll ? d->pageItemMax : d->actionList.count( ))*XIM_ITEM_HEIGHT
                    + d->bottomHeight);
@@ -172,18 +187,18 @@ QSize NXim::sizeHint( ) const
 void NXim::resizeEvent(QResizeEvent *event)
 {
     QMenu::resizeEvent(event);
-    QPixmap bg(size( ));
+    QPixmap bg(size());
     QPainter painter(&bg);
     QStyleOption option;
     option.initFrom(this);
-    option.rect = QRect(QPoint(0, 0), bg.size( ));
+    option.rect = QRect(QPoint(0, 0), bg.size());
     /* erase with background color */
     painter.eraseRect(option.rect);
     /* draw background image to the pixmap */
-    drawBackground(&painter, option, rect( ).translated(option.rect.topLeft( )));
+    drawBackground(&painter, option, rect().translated(option.rect.topLeft( )));
     /* set the background pixmap to background role */
-    QPalette pal = palette( );
-    pal.setBrush(backgroundRole( ), QBrush(bg));
+    QPalette pal = palette();
+    pal.setBrush(backgroundRole(), QBrush(bg));
     setPalette(pal);
 }
 
@@ -192,11 +207,11 @@ void NXim::paintEvent(QPaintEvent *event)
     QPainter painter;
     painter.begin(this);
     /* draw header, the xim icon and the title */
-    QRect topRect = rect( );
+    QRect topRect = rect();
     topRect.setHeight(d->topHeight);
     QStyleOptionHeader headerOption;
     headerOption.initFrom(this);
-    headerOption.text = title( );
+    headerOption.text = title();
     headerOption.textAlignment = Qt::AlignCenter;
     headerOption.orientation = Qt::Horizontal;
     headerOption.icon = QIcon(*d->ximIconPixmap);
@@ -206,15 +221,15 @@ void NXim::paintEvent(QPaintEvent *event)
     /* draw the items that need updating */
     QStyleOption option;
     option.initFrom(this);
-    const int hmargin = style( )->pixelMetric(QStyle::PM_MenuHMargin, &option, this);
-    const int vmargin = style( )->pixelMetric(QStyle::PM_MenuVMargin, &option, this);
-    QRect contentRect = rect( ).adjusted(hmargin,
+    const int hmargin = style()->pixelMetric(QStyle::PM_MenuHMargin, &option, this);
+    const int vmargin = style()->pixelMetric(QStyle::PM_MenuVMargin, &option, this);
+    QRect contentRect = rect().adjusted(hmargin,
                                          vmargin + d->topHeight + (d->needScroll ? d->arrowSize.height( ) : 0) + XIM_ITEM_ARROW_SPACING,
                                          -hmargin,
                                          -vmargin - d->bottomHeight - (d->needScroll ? d->arrowSize.height( ) : 0) - XIM_ITEM_ARROW_SPACING);
 
-    int x = contentRect.x( );
-    int y = contentRect.y( );
+    int x = contentRect.x();
+    int y = contentRect.y();
     QList<QAction *> pageActions = d->actionList.mid(d->topItemIndex, d->pageItemMax);
     Q_FOREACH(QAction *item, pageActions)
     {
@@ -232,22 +247,22 @@ void NXim::paintEvent(QPaintEvent *event)
         if (opt.state & QStyle::State_Selected)
             drawCursor(&painter, opt, opt.rect);
 
-        style( )->drawControl(QStyle::CE_MenuItem, &opt, &painter, this);
-        y += itemRect.height( );
+        style()->drawControl(QStyle::CE_MenuItem, &opt, &painter, this);
+        y += itemRect.height();
     }
 
     /* drawing the up/down arrows */
     const bool scrollUp = (d->topItemIndex > 0);
-    const bool scrollDown = (d->topItemIndex + d->pageItemMax < d->actionList.count( ));
+    const bool scrollDown = (d->topItemIndex + d->pageItemMax < d->actionList.count());
     if (scrollUp || scrollDown)
     {
         QStyleOptionMenuItem menuOpt;
         menuOpt.initFrom(this);
         menuOpt.type = QStyleOption::SO_MenuItem;
-        menuOpt.palette = palette( );
+        menuOpt.palette = palette();
         menuOpt.state = QStyle::State_None;
         menuOpt.checkType = QStyleOptionMenuItem::NotCheckable;
-        menuOpt.menuRect = rect( );
+        menuOpt.menuRect = rect();
         menuOpt.maxIconWidth = 0;
         menuOpt.tabWidth = 0;
         menuOpt.menuItemType = QStyleOptionMenuItem::Scroller;
@@ -256,9 +271,9 @@ void NXim::paintEvent(QPaintEvent *event)
         /* draw up arrow if need */
         if (scrollUp)
         {
-            menuOpt.rect.setRect(rect( ).center( ).x( ) - d->arrowSize.width( )/2,
-                                 contentRect.y( ) - XIM_ITEM_ARROW_SPACING - d->arrowSize.height( ),
-                                 d->arrowSize.width( ), d->arrowSize.height( ));
+            menuOpt.rect.setRect(rect().center().x() - d->arrowSize.width()/2,
+                                 contentRect.y() - XIM_ITEM_ARROW_SPACING - d->arrowSize.height(),
+                                 d->arrowSize.width(), d->arrowSize.height());
             painter.setClipRect(menuOpt.rect);
             style()->drawControl(QStyle::CE_MenuScroller, &menuOpt, &painter, this);
         }
@@ -266,52 +281,52 @@ void NXim::paintEvent(QPaintEvent *event)
         /* draw down arrow if need */
         if (scrollDown)
         {
-            menuOpt.rect.setRect(rect( ).center( ).x( ) - d->arrowSize.width( )/2,
-                                 contentRect.bottom( ) + XIM_ITEM_ARROW_SPACING,
-                                 d->arrowSize.width( ), d->arrowSize.height( ));
+            menuOpt.rect.setRect(rect().center().x() - d->arrowSize.width()/2,
+                                 contentRect.bottom() + XIM_ITEM_ARROW_SPACING,
+                                 d->arrowSize.width(), d->arrowSize.height());
             menuOpt.state |= QStyle::State_DownArrow;
             painter.setClipRect(menuOpt.rect);
             style()->drawControl(QStyle::CE_MenuScroller, &menuOpt, &painter, this);
         }
     }
 
-    painter.end( );
+    painter.end();
 }
 
 void NXim::drawBackground(QPainter *painter, const QStyleOption &option, const QRect &rect) const
 {
     /* draw top left*/
-    painter->drawPixmap(QRect(rect.topLeft( ), d->bgTopLeftPixmap->size( )),
+    painter->drawPixmap(QRect(rect.topLeft(), d->bgTopLeftPixmap->size()),
                         *d->bgTopLeftPixmap);
     /* draw top right */
-    painter->drawPixmap(QRect(QPoint(rect.x( ) + rect.width( ) - d->bgTopRightPixmap->width( ),
-                                     rect.y( )), d->bgTopRightPixmap->size( )), *d->bgTopRightPixmap);
+    painter->drawPixmap(QRect(QPoint(rect.x() + rect.width() - d->bgTopRightPixmap->width(),
+                                     rect.y()), d->bgTopRightPixmap->size()), *d->bgTopRightPixmap);
     /* draw top middle*/
-    painter->drawTiledPixmap(QRect(rect.x( ) + d->bgTopLeftPixmap->width( ),
-                                   rect.y( ),
-                                   rect.width( ) - d->bgTopLeftPixmap->width( ) - d->bgTopRightPixmap->width( ),
-                                   d->bgTopMiddlePixmap->height( )),
+    painter->drawTiledPixmap(QRect(rect.x() + d->bgTopLeftPixmap->width(),
+                                   rect.y(),
+                                   rect.width() - d->bgTopLeftPixmap->width() - d->bgTopRightPixmap->width(),
+                                   d->bgTopMiddlePixmap->height()),
                              *d->bgTopMiddlePixmap, QPoint(0, 0));
     /* draw bottom */
-    painter->drawPixmap(QRect(rect.x( ), rect.y( ) + rect.height( ) - d->bgBottomPixmap->height( ),
-                              rect.width( ), d->bgBottomPixmap->height( )), *d->bgBottomPixmap);
+    painter->drawPixmap(QRect(rect.x(), rect.y() + rect.height() - d->bgBottomPixmap->height(),
+                              rect.width(), d->bgBottomPixmap->height()), *d->bgBottomPixmap);
     /* draw middle left side */
-    painter->drawPixmap(QRect(rect.x( ),
-                              rect.y( ) + d->bgTopMiddlePixmap->height( ),
-                              d->bgMiddleSidePixmap->width( ),
-                              rect.height( ) - d->bgTopMiddlePixmap->height( ) - d->bgBottomPixmap->height( )),
+    painter->drawPixmap(QRect(rect.x(),
+                              rect.y() + d->bgTopMiddlePixmap->height(),
+                              d->bgMiddleSidePixmap->width(),
+                              rect.height() - d->bgTopMiddlePixmap->height() - d->bgBottomPixmap->height()),
                         *d->bgMiddleSidePixmap);
     /* draw middle right side */
-    painter->drawPixmap(QRect(rect.x( ) + rect.width( ) - d->bgMiddleSidePixmap->width( ),
-                              rect.y( ) + d->bgTopMiddlePixmap->height( ),
-                              d->bgMiddleSidePixmap->width( ),
-                              rect.height( ) - d->bgTopMiddlePixmap->height( ) - d->bgBottomPixmap->height( )),
+    painter->drawPixmap(QRect(rect.x() + rect.width() - d->bgMiddleSidePixmap->width(),
+                              rect.y() + d->bgTopMiddlePixmap->height(),
+                              d->bgMiddleSidePixmap->width(),
+                              rect.height() - d->bgTopMiddlePixmap->height() - d->bgBottomPixmap->height()),
                         *d->bgMiddleSidePixmap);
     /* draw middle center */
-    painter->drawPixmap(QRect(rect.x( ) + d->bgMiddleSidePixmap->width( ),
-                              rect.y( ) + d->bgTopMiddlePixmap->height( ),
-                              rect.width( ) - 2*d->bgMiddleSidePixmap->width( ),
-                              rect.height( ) - d->bgTopMiddlePixmap->height( ) - d->bgBottomPixmap->height( )),
+    painter->drawPixmap(QRect(rect.x() + d->bgMiddleSidePixmap->width(),
+                              rect.y() + d->bgTopMiddlePixmap->height(),
+                              rect.width() - 2*d->bgMiddleSidePixmap->width(),
+                              rect.height() - d->bgTopMiddlePixmap->height() - d->bgBottomPixmap->height()),
                         *d->bgMiddleMiddlePixmap);
 }
 
@@ -320,38 +335,38 @@ void NXim::drawHeader(QPainter *painter, const QStyleOptionHeader &option, const
     QRect boundingRect;
     painter->drawText(rect, option.textAlignment, option.text, &boundingRect);
     QRect iconRect = boundingRect;
-    iconRect.setX(boundingRect.x( ) - boundingRect.height( )*3/4 - XIM_ICON_SPACING);
-    iconRect.setWidth(boundingRect.height( )*3/4);
-    painter->drawPixmap(iconRect, option.icon.pixmap(iconRect.size( )));
+    iconRect.setX(boundingRect.x() - boundingRect.height()*3/4 - XIM_ICON_SPACING);
+    iconRect.setWidth(boundingRect.height()*3/4);
+    painter->drawPixmap(iconRect, option.icon.pixmap(iconRect.size()));
 }
 
 void NXim::drawCursor(QPainter *painter, const QStyleOptionMenuItem &option, const QRect &rect) const
 {
-    painter->drawPixmap(rect.x( ), rect.y( ),
-                        d->bgCursorLeftPixmap->width( ), rect.height( ),
+    painter->drawPixmap(rect.x(), rect.y(),
+                        d->bgCursorLeftPixmap->width(), rect.height(),
                         *d->bgCursorLeftPixmap);
-    painter->drawPixmap(rect.right( ) - d->bgCursorRightPixmap->width( ), rect.y( ),
-                        d->bgCursorRightPixmap->width( ), rect.height( ),
+    painter->drawPixmap(rect.right() - d->bgCursorRightPixmap->width(), rect.y(),
+                        d->bgCursorRightPixmap->width(), rect.height(),
                         *d->bgCursorRightPixmap);
-    painter->drawTiledPixmap(rect.x( ) + d->bgCursorLeftPixmap->width( ), rect.y( ),
-                             rect.width( ) - d->bgCursorLeftPixmap->width( ) - d->bgCursorRightPixmap->width( ), rect.height( ),
+    painter->drawTiledPixmap(rect.x() + d->bgCursorLeftPixmap->width(), rect.y(),
+                             rect.width() - d->bgCursorLeftPixmap->width() - d->bgCursorRightPixmap->width(), rect.height(),
                              *d->bgCursorMiddlePixmap);
 }
 
-QList<QAction *> NXim::getVisibleActions( ) const
+QList<QAction *> NXim::getVisibleActions() const
 {
     QList<QAction *> items;
-    Q_FOREACH(QAction *item, actions( ))
+    Q_FOREACH(QAction *item, actions())
     {
         if (QWidgetAction *wa = qobject_cast<QWidgetAction *>(item))
             if (wa->requestWidget(const_cast<NXim *>(this)))
                 continue;
 
-        if (item->isVisible( ))
+        if (item->isVisible())
             items << item;
     }
 
-    if (items.count( ) > d->pageItemMax)
+    if (items.count() > d->pageItemMax)
         d->needScroll = true;
     else
         d->needScroll = false;
@@ -361,13 +376,13 @@ QList<QAction *> NXim::getVisibleActions( ) const
 
 
 
-NXimPrivate::NXimPrivate( )
+NXimPrivate::NXimPrivate()
 {
-    loadPixmaps( );
+    loadPixmaps();
 
-    topHeight = qMax(bgTopLeftPixmap->height( ), bgTopRightPixmap->height( ));
-    topHeight = qMax(topHeight, bgTopMiddlePixmap->height( ));
-    bottomHeight = bgBottomPixmap->height( );
+    topHeight = qMax(bgTopLeftPixmap->height(), bgTopRightPixmap->height());
+    topHeight = qMax(topHeight, bgTopMiddlePixmap->height());
+    bottomHeight = bgBottomPixmap->height();
     arrowSize = QSize(XIM_ARROW_WIDTH, XIM_ARROW_HEIGHT);
 
     topItemIndex = 0;
@@ -376,12 +391,12 @@ NXimPrivate::NXimPrivate( )
     needScroll = false;
 }
 
-NXimPrivate::~NXimPrivate( )
+NXimPrivate::~NXimPrivate()
 {
-    unloadPixmaps( );
+    unloadPixmaps();
 }
 
-void NXimPrivate::loadPixmaps( )
+void NXimPrivate::loadPixmaps()
 {
     ximIconPixmap = new QPixmap(":/neux/xim.gif");
     upArrowPixmap = new QPixmap(":/neux/grey-arrow-up.gif");
@@ -397,7 +412,7 @@ void NXimPrivate::loadPixmaps( )
     bgCursorRightPixmap = new QPixmap(":/neux/xim-cursor-right.png");
 }
 
-void NXimPrivate::unloadPixmaps( )
+void NXimPrivate::unloadPixmaps()
 {
     delete ximIconPixmap;
     delete upArrowPixmap;

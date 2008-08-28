@@ -37,8 +37,8 @@ class NListViewItemPrivate
 {
 
 public:
-    NListViewItemPrivate( );
-    ~NListViewItemPrivate( );
+    NListViewItemPrivate();
+    ~NListViewItemPrivate();
 
     QString itemText;
     QString itemIcon;

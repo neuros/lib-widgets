@@ -1,5 +1,5 @@
-#ifndef _NLISTVIEWMODEL_P_H_
-#define _NLISTVIEWMODEL_P_H_
+#ifndef _NMENUITEMMODEL_H_
+#define _NMENUITEMMODEL_H_
 /*
  *  Copyright(C) 2007 Neuros Technology International LLC. 
  *               <www.neurostechnology.com>
@@ -22,29 +22,42 @@
  *
  ****************************************************************************
  *
- * NListViewModelPrivate header.
+ * NMenuItemModel implement header.
  *
  * REVISION:
  * 
- * 1) Initial creation. ----------------------------------- 2008-08-06 WX
+ * 1) Initial creation. ----------------------------------- 2007-11-27 SZ
  *
  */
 
-#include "nlistviewitem.h"
+#include <QAbstractListModel>
+#include <QList>
+#include "nmenuitem.h"
 
-class NListViewModelPrivate
+class NMenuItemModelPrivate;
+
+class NMenuItemModel :  public QAbstractListModel
 {
+    Q_OBJECT
 
 public:
-    NListViewModelPrivate();
-    ~NListViewModelPrivate();
+    NMenuItemModel(QObject * parent = NULL);
+    ~NMenuItemModel();
 
     void clear();
+    bool appendRow(NMenuItem *item);
+    bool appendRows(const QList<NMenuItem *> &items);
+    bool insertRow(int row,  NMenuItem *item);
+    bool insertRows(int row, const QList<NMenuItem *> &items);
+    bool removeRow(int row);
+    bool removeRows(int row, int count);
 
-    QList<NListViewItem *> modelDatas;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
 private:
+    NMenuItemModelPrivate *d;
 
 };
 
-#endif // _NLISTVIEWMODEL_P_H_
+#endif // _NMENUITEMMODEL_H_

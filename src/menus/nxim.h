@@ -40,11 +40,11 @@ class NXim : public QMenu
 {
     Q_OBJECT
 
-    public:
+public:
     NXim(QWidget *parent = NULL);
     NXim(const QString &title, QWidget *parent = NULL);
-    virtual ~NXim( );
-    virtual QSize sizeHint( ) const;
+    virtual ~NXim();
+    virtual QSize sizeHint() const;
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);
@@ -53,7 +53,8 @@ protected:
     virtual void paintEvent(QPaintEvent *event);
 
 private:
-    QList<QAction *> getVisibleActions( ) const;
+    void init();
+    QList<QAction *> getVisibleActions() const;
     void drawBackground(QPainter *painter, const QStyleOption &option, const QRect &rect) const;
     void drawHeader(QPainter *painter, const QStyleOptionHeader &option, const QRect &rect) const;
     void drawCursor(QPainter *painter, const QStyleOptionMenuItem &option, const QRect &rect) const;

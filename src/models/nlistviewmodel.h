@@ -41,10 +41,10 @@ class NListViewModel : public QAbstractListModel
     Q_OBJECT
 
 public:
-	NListViewModel(QObject * parent = NULL);
-	~NListViewModel( );
+    NListViewModel(QObject * parent = NULL);
+    virtual ~NListViewModel();
 
-    void clear( );
+    void clear();
     bool appendRow(NListViewItem *item);
     bool appendRows(const QList<NListViewItem *> &items);
     bool insertRow(int row,  NListViewItem *item);
@@ -52,7 +52,7 @@ public:
     bool removeRow(int row);
     bool removeRows(int row, int count);
 
-	virtual int rowCount(const QModelIndex &parent = QModelIndex( )) const;
+    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
     virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
 private:
