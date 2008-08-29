@@ -175,7 +175,7 @@ QSize NXim::sizeHint() const
 {
     d->actionList = getVisibleActions();
     QSize size;
-    size.setWidth(QMenu::sizeHint().width());
+    size.setWidth(d->actionList.count() > 0 ? QMenu::sizeHint().width() : XIM_WIDTH);
     size.setHeight(d->topHeight
                    + (d->needScroll ? 2*d->arrowSize.height() : 0)
                    + 2*XIM_ITEM_ARROW_SPACING

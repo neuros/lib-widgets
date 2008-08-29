@@ -51,9 +51,9 @@ NHorizontalComboBox::NHorizontalComboBox(QWidget *parent)
     setLineEditTransparent(true);
 }
 
-bool NHorizontalComboBox::isLineEditTransparent( ) const 
+bool NHorizontalComboBox::isLineEditTransparent() const 
 {
-    if (lineEdit( ) == NULL)
+    if (lineEdit() == NULL)
         return false; //No editor, just return false.
 
     QPalette pal = lineEdit()->palette();
@@ -148,10 +148,12 @@ void NHorizontalComboBox::keyPressEvent(QKeyEvent *e)
             case Qt::Key_Up:
                 // Up => Left
                 convertedKey = Qt::Key_Left;
+                e->ignore(); // ignore this key event, pass it to its parent
                 break;
             case Qt::Key_Down:
                 // Down => Right
                 convertedKey = Qt::Key_Right;
+                e->ignore(); // ignore this key event, pass it to its parent
                 break;
             }
 

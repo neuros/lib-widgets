@@ -48,6 +48,7 @@ class NLineEdit : public QLineEdit
 public:
     enum AcceptKeyMode
     {
+        AcceptNone = 0x00,
         AcceptAllKey = 0x01,
         AcceptNumericKey = 0x02,
         AcceptCursorMoveKey = 0x04,

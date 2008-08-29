@@ -4,6 +4,9 @@ CONFIG += warn_on
 TARGET = neux 
 DESTDIR = ./build
 
+QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
+QT -= xml sql svg
+
 #Temporary Directory
 MOC_DIR =	./tmp
 UI_DIR =	./tmp
@@ -49,7 +52,8 @@ SOURCES +=	./designer-plugins/ncapacitybarplugin.cpp \
 		./designer-plugins/ntimeprogressbarplugin.cpp \
 		./designer-plugins/neux.cpp
 } else {
-include (./config.pri)
+INCLUDEPATH +=  ${TOOLCHAIN}/Qt/include/*
+LIBS += -L${TOOLCHAIN}/Qt/lib
 }
 
 
@@ -114,19 +118,14 @@ designer_include.files = $$HEADERS
 
 INSTALLS += designer_plugin designer_include
 } else {
+rootfs.path = /${ROOTFS}/fs/lib
 rootfs.files = ./build/*.so.1.0.0
 rootfs.extra = cp -a ./build/* /${ROOTFS}/fs/lib
 
-toolchain_include.files =./src/bars/*.h \
-			 ./src/boxes/*.h \
-			 ./src/buttons/*.h \
-			 ./src/edits/*.h \
-			 ./src/items/*.h \
-			 ./src/labels/*.h \
-			 ./src/menus/*.h \
-			 ./src/models/*.h \
-			 ./src/views/*.h
+toolchain_include.path = /${TOOLCHAIN_USR_INSTALL}/include/neux
+toolchain_include.files = $$HEADERS
 				
+toolchain_lib.path = /${TOOLCHAIN_USR_INSTALL}/lib
 toolchain_lib.files = ./build/*.so.1.0.0
 toolchain_lib.extra = cp -a ./build/* /${TOOLCHAIN_USR_INSTALL}/lib
 
