@@ -33,43 +33,14 @@
  *
  */
 
-#if defined(DESIGNER)
-#include <QtDesigner/QDesignerExportWidget>
-#endif
 #include <QWidget>
 #include <QList>
+#include "ntimemark.h"
 
-class NTimeMark
-{
-public:
-    enum MarkType { MTBook = 0, MTClip }; 
-    enum MarkProp { MPStart = 0, MPBoth };
-
-    NTimeMark( )
-    : markType(MTBook), markState(MPStart), markStart(0), markEnd(0) {}
-    ~NTimeMark( ) {}
-
-    inline bool operator==(const NTimeMark &other)
-    { return markType == other.type( ) && markState == other.state( )
-        && markStart == other.start( ) && markEnd == other.end( ); }
-    
-    inline MarkType type( ) const { return markType;}
-    inline void setType(MarkType type) { markType = type;}
-    inline MarkProp state( ) const { return markState;}
-    inline void setState(MarkProp state) { markState = state;}
-    inline int start( ) const { return markStart;}
-    inline void setStart(int start) { markStart = start;}
-    inline int end( ) const { return markEnd;}
-    inline void setEnd(int end) { markEnd = end;}
-
-private:
-    MarkType markType;
-    MarkProp markState;
-    int markStart;
-    int markEnd;
-};
+class NTimeProgressBarPrivate;
 
 #if defined(DESIGNER)
+    #include <QtDesigner/QDesignerExportWidget>
 class QDESIGNER_WIDGET_EXPORT NTimeProgressBar : public QWidget
 #else
 class NTimeProgressBar : public QWidget
@@ -86,17 +57,18 @@ class NTimeProgressBar : public QWidget
 
 public:
     NTimeProgressBar(QWidget *parent = NULL);
+    ~NTimeProgressBar( );
 
-    int maximum( ) const { return maximumValue; }
-    int minimum( ) const { return minimumValue; }
-    int value( ) const { return currentValue; }
+    int maximum( ) const;
+    int minimum( ) const;
+    int value( ) const;
 
-    bool isCurrentTextVisible( ) const { return currentTextVisible; }
+    bool isCurrentTextVisible( ) const;
     void setCurrentTextVisible(bool enable);
-    bool isTotalTextVisible( ) { return totalTextVisible; }
+    bool isTotalTextVisible( ) const;
     void setTotalTextVisible(bool enable);
 
-    QString format( ) const { return textFormat; }
+    QString format( ) const;
     void setFormat(const QString &format);
 
     virtual QSize sizeHint( ) const;
@@ -110,7 +82,7 @@ public Q_SLOTS:
     void setValue(int v);
     void setFlag(const QList<NTimeMark> &flags); 
 
-Q_SIGNALS:
+    Q_SIGNALS:
     /* 
      * This signal is emitted when the value shown in the progress bar changes.
      * value is the new value shown by the progress bar.
@@ -129,23 +101,7 @@ private:
     void computePos(void); //calculate position
 
 private:
-    int currentValue;
-    int maximumValue;
-    int minimumValue;
-
-    bool totalTextVisible;
-    bool currentTextVisible;
-    QString textFormat;
-    Qt::Alignment textAlignment;
-    QList<NTimeMark> timeMarks;
-
-    //paint depend
-    QRect RetProg; //the area for active progress bar
-    QRect RetGray; //the area for progress bar background
-    QRect RetPost; //the area for the moving post
-    QRect RetMark; //the area for the book mark
-    QRect RetCurText; //the area for the total time text
-    QRect RetTotText; //the area for the current time text
+    NTimeProgressBarPrivate *d;
 };
 
 #endif // _NTIMEPROGRESSBAR_H_

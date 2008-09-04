@@ -34,6 +34,7 @@
 //#define QT_NO_DEBUG_OUTPUT
 #include <QDebug>
 #include "ntimeprogressbar.h"
+#include "ntimeprogressbar_p.h"
 
 #include <QPainter>
 #include <QTime>
@@ -50,7 +51,7 @@
  * Constructs a NTimeProgressBar bar with the given parent.
 */
 NTimeProgressBar::NTimeProgressBar(QWidget *parent)
-: QWidget(parent)
+: QWidget(parent), d(new NTimeProgressBarPrivate)
 {
     setRange(0, 0);
     setValue(0);
@@ -64,13 +65,22 @@ NTimeProgressBar::NTimeProgressBar(QWidget *parent)
     setPalette(p);
 }
 
+NTimeProgressBar::~NTimeProgressBar( )
+{
+    if (d != NULL)
+    {
+        delete d;
+        d = NULL;
+    }
+}
+
 void NTimeProgressBar::drawGradientRect(QPainter *painter, const QRect &rect, const QColor &from, const QColor &to, int direction)
 {
-	QLinearGradient gradient(rect.topLeft( ), 0 == direction ? rect.bottomLeft( ) : rect.topRight( ));
-	gradient.setColorAt(0.0, from);
-	gradient.setColorAt(1.0, to);
-	painter->setBrush(gradient);
-	painter->drawRect(rect);
+    QLinearGradient gradient(rect.topLeft( ), 0 == direction ? rect.bottomLeft( ) : rect.topRight( ));
+    gradient.setColorAt(0.0, from);
+    gradient.setColorAt(1.0, to);
+    painter->setBrush(gradient);
+    painter->drawRect(rect);
 }
 
 void NTimeProgressBar::drawGradientBar(QPainter *painter, const QRect &rect, const QColor &from, const QColor &to)
@@ -90,143 +100,143 @@ void NTimeProgressBar::drawProgressBar(QPainter *painter, const QRect &rect, con
 
 void NTimeProgressBar::drawPaintTimeMark(QPainter &painter)
 {
-    if (timeMarks.isEmpty( ))
+    if (d->timeMarks.isEmpty( ))
         return;
- 
-	int MarkLength = MARK_MIN_LENGTH;
-	int MarkNormalLength = RetCurText.height();
-	QBrush brush;
-	QColor color;
-	brush.setStyle(Qt::SolidPattern);
+
+    int MarkLength = MARK_MIN_LENGTH;
+    int MarkNormalLength = d->RetCurText.height();
+    QBrush brush;
+    QColor color;
+    brush.setStyle(Qt::SolidPattern);
     int i = 0;
-    Q_FOREACH(NTimeMark item, timeMarks)
-	{
+    Q_FOREACH(NTimeMark item, d->timeMarks)
+    {
         i ++;
-		if(item.type( ) == NTimeMark::MTClip)
-		{
-			color = Qt::yellow;
-			if(item.state( ) != NTimeMark::MPStart)
-			{
-				int length = item.end( )-item.start( );
-				MarkLength = RetMark.width()*length/maximum( );
-			}
-		}
-		else if(item.type( ) == NTimeMark::MTBook)
-		{
-			color = Qt::green;
-		}
-		
-		int posx = RetMark.width( )*item.start( )/maximum( );
-  
-		QRect ret = RetProg;
-		ret.setWidth(MarkLength);
-		ret.translate(posx,0);
-  
-		QLinearGradient gradient(0,ret.y(),0,ret.y()+ret.height());
-		color.setAlpha(0);
-		gradient.setColorAt(0.0,color);
-		color.setAlpha(255);
-		gradient.setColorAt(1.0,color);
-		painter.setBrush(gradient);
-		painter.drawRect(ret);	
-		 
-		brush.setColor(color);
-		ret.setY(RetMark.y());
-		ret.setHeight(RetMark.height());
-		painter.fillRect(ret,brush);
-		
-		if(MarkLength < MarkNormalLength)
-		{
-			ret.setWidth(MarkNormalLength);
-			painter.fillRect(ret,brush);
-		}
-  
-		//draw number
-		QString str;
-		str.setNum(i);
-		painter.setPen(QColor(30,30,30));
-		painter.drawText(ret,Qt::AlignHCenter|Qt::AlignVCenter,str);
-		painter.setPen(Qt::NoPen);
-	}
+        if (item.type( ) == NTimeMark::MTClip)
+        {
+            color = Qt::yellow;
+            if (item.state( ) != NTimeMark::MPStart)
+            {
+                int length = item.end( )-item.start( );
+                MarkLength = d->RetMark.width()*length/maximum( );
+            }
+        }
+        else if (item.type( ) == NTimeMark::MTBook)
+        {
+            color = Qt::green;
+        }
+
+        int posx = d->RetMark.width( )*item.start( )/maximum( );
+
+        QRect ret = d->RetProg;
+        ret.setWidth(MarkLength);
+        ret.translate(posx,0);
+
+        QLinearGradient gradient(0,ret.y(),0,ret.y()+ret.height());
+        color.setAlpha(0);
+        gradient.setColorAt(0.0,color);
+        color.setAlpha(255);
+        gradient.setColorAt(1.0,color);
+        painter.setBrush(gradient);
+        painter.drawRect(ret);  
+
+        brush.setColor(color);
+        ret.setY(d->RetMark.y());
+        ret.setHeight(d->RetMark.height());
+        painter.fillRect(ret,brush);
+
+        if (MarkLength < MarkNormalLength)
+        {
+            ret.setWidth(MarkNormalLength);
+            painter.fillRect(ret,brush);
+        }
+
+        //draw number
+        QString str;
+        str.setNum(i);
+        painter.setPen(QColor(30,30,30));
+        painter.drawText(ret,Qt::AlignHCenter|Qt::AlignVCenter,str);
+        painter.setPen(Qt::NoPen);
+    }
 }
 
 void NTimeProgressBar::computePos(void)
 {
-	int range, pos;	
-	QFontMetrics fm(font());
-	int textsize =  fm.height();
-	int textlength = fm.width(DEFAULTSTR);
-	
-	RetGray  = QRect(textlength/2,
-					height()/2-textsize/6,
-					width()-textlength*3/2-SPACE*4,
-					textsize/3);
-	
-	range = maximum( ) - minimum( );
-	if(range <= 0)
-		pos = 0;
-	else
-		pos = RetGray.width( )*(value( ) - minimum( ))/range;
-	
-	RetPost = QRect(RetGray.x(),
-				height()/2-RetGray.height(),
-				RetGray.height()/2,
-				RetGray.height()*2);
-	RetPost.translate(pos,0);
-	RetProg = RetGray;
-	RetProg.setWidth(pos);
-	
-	RetCurText = QRect(pos,0,textlength,
-							textsize);
-	RetTotText = QRect(width()-textlength-SPACE*2,
-							height()/2-textsize/2,
-							textlength,
-							textsize);
-	
-	RetMark = RetGray;
-	RetMark.setHeight(height()-RetGray.y()-RetGray.height());
-	RetMark.translate(0,RetGray.height());
+    int range, pos; 
+    QFontMetrics fm(font());
+    int textsize =  fm.height();
+    int textlength = fm.width(DEFAULTSTR);
+
+    d->RetGray  = QRect(textlength/2,
+                        height()/2-textsize/6,
+                        width()-textlength*3/2-SPACE*4,
+                        textsize/3);
+
+    range = maximum( ) - minimum( );
+    if (range <= 0)
+        pos = 0;
+    else
+        pos = d->RetGray.width( )*(value( ) - minimum( ))/range;
+
+    d->RetPost = QRect(d->RetGray.x(),
+                       height()/2-d->RetGray.height(),
+                       d->RetGray.height()/2,
+                       d->RetGray.height()*2);
+    d->RetPost.translate(pos,0);
+    d->RetProg = d->RetGray;
+    d->RetProg.setWidth(pos);
+
+    d->RetCurText = QRect(pos,0,textlength,
+                          textsize);
+    d->RetTotText = QRect(width()-textlength-SPACE*2,
+                          height()/2-textsize/2,
+                          textlength,
+                          textsize);
+
+    d->RetMark = d->RetGray;
+    d->RetMark.setHeight(height() - d->RetGray.y() - d->RetGray.height());
+    d->RetMark.translate(0, d->RetGray.height());
 }
 
 void NTimeProgressBar::paintEvent(QPaintEvent *event)
 {
-	QPainter painter(this);
-	painter.setFont(font( ));
+    QPainter painter(this);
+    painter.setFont(font( ));
 
-	computePos( );
+    computePos( );
 
     QColor color;
 
     color = palette( ).color(QPalette::Window);
-	drawGradientBar(&painter, RetGray, color, QColor(30,30,30));
+    drawGradientBar(&painter, d->RetGray, color, QColor(30,30,30));
 
     color = palette( ).color(QPalette::Highlight);
-    drawProgressBar(&painter, RetProg, color, QColor(1,1,1));
+    drawProgressBar(&painter, d->RetProg, color, QColor(1,1,1));
 
-	drawPaintTimeMark(painter);
+    drawPaintTimeMark(painter);
 
     color = palette( ).color(QPalette::HighlightedText);
-	drawPost(&painter, RetPost, color, QColor(1,1,1));
+    drawPost(&painter, d->RetPost, color, QColor(1,1,1));
 
-	if(isTotalTextVisible( ))
+    if (isTotalTextVisible( ))
     {
         painter.setPen(palette( ).color(QPalette::WindowText));
-        painter.drawText(RetTotText, Qt::AlignHCenter, QTime( ).addSecs(maximum( )).toString(format( )));
+        painter.drawText(d->RetTotText, Qt::AlignHCenter, QTime( ).addSecs(maximum( )).toString(format( )));
     }
 
-	if(isCurrentTextVisible( ))
+    if (isCurrentTextVisible( ))
     {
         painter.setPen(palette( ).color(QPalette::BrightText));
-        painter.drawText(RetCurText, Qt::AlignHCenter, QTime( ).addSecs(value( )).toString(format( )));
+        painter.drawText(d->RetCurText, Qt::AlignHCenter, QTime( ).addSecs(value( )).toString(format( )));
     }
 }
 
 QSize NTimeProgressBar::sizeHint( ) const
 {
-	QFontMetrics fm(font());
-	int textsize =  fm.height();
+    QFontMetrics fm(font());
+    int textsize =  fm.height();
 
-	return QSize(DEF_WIDTH, textsize*3+2*SPACE);
+    return QSize(DEF_WIDTH, textsize*3+2*SPACE);
 }
 
 QSize NTimeProgressBar::minimumSizeHint () const
@@ -236,10 +246,10 @@ QSize NTimeProgressBar::minimumSizeHint () const
 
 void NTimeProgressBar::setFlag(const QList<NTimeMark> &flags)
 {
-    if (flags == timeMarks)
+    if (flags == d->timeMarks)
         return;
 
-    timeMarks = flags;
+    d->timeMarks = flags;
     update( );
 }
 
@@ -248,35 +258,50 @@ void NTimeProgressBar::setFlag(const QList<NTimeMark> &flags)
  */
 void NTimeProgressBar::reset( )
 {
-	setValue(minimum( ));
+    setValue(d->minimum);
+}
+
+int NTimeProgressBar::value( ) const
+{ 
+    return d->value;
 }
 
 void NTimeProgressBar::setValue(int v)
 {
     if ((v < 0)
-        || (v == value( ))
-        || ((v > maximum( ) || v < minimum( )) && (maximum( ) != 0 || minimum( ) != 0)))
+        || (v == d->value)
+        || ((v > d->maximum || v < d->minimum) && (d->maximum != 0 || d->minimum != 0)))
         return;
 
-	currentValue = v;
-    emit valueChanged(currentValue);
+    d->value = v;
+    emit valueChanged(d->value);
     update( );
+}
+
+int NTimeProgressBar::maximum( ) const
+{ 
+    return d->maximum;
 }
 
 void NTimeProgressBar::setMaximum(int max)
 {
-    if ((max < 0) || (max == maximum( )))
+    if ((max < 0) || (max == d->maximum))
         return;
 
-    setRange(qMin(minimum( ), max), max);
+    setRange(qMin(d->minimum, max), max);
+}
+
+int NTimeProgressBar::minimum( ) const
+{ 
+    return d->minimum;
 }
 
 void NTimeProgressBar::setMinimum(int min)
 {
-    if ((min < 0) || (min == minimum( )))
+    if ((min < 0) || (min == d->minimum))
         return;
 
-    setRange(min, qMax(maximum( ), min));
+    setRange(min, qMax(d->maximum, min));
 }
 
 /*
@@ -286,43 +311,69 @@ void NTimeProgressBar::setMinimum(int min)
  */
 void NTimeProgressBar::setRange(int min, int max)
 {
-    if ((minimumValue == min) && (maximumValue == max))
+    if ((d->minimum == min) && (d->maximum == max))
         return;
 
     min = qMax(min, 0);
     max = qMax(max, 0);
 
-    minimumValue = min;
-    maximumValue = qMax(min, max);
-    setValue(qBound(minimumValue, currentValue, maximumValue));
-	update( );
+    d->minimum = min;
+    d->maximum = qMax(min, max);
+    setValue(qBound(d->minimum, d->value, d->maximum));
+    update( );
+}
+
+QString NTimeProgressBar::format( ) const
+{ 
+    return d->textFormat;
 }
 
 void NTimeProgressBar::setFormat(const QString &format)
 {
-    if (format == textFormat)
+    if (d->textFormat == format)
         return;
 
-    textFormat = format;
+    d->textFormat = format;
     update( );
+}
+
+bool NTimeProgressBar::isCurrentTextVisible( ) const
+{ 
+    return d->currentTextVisible;
 }
 
 void NTimeProgressBar::setCurrentTextVisible(bool enable)
 {
-    if (enable == currentTextVisible)
+    if (d->currentTextVisible == enable)
         return;
 
-	currentTextVisible = enable;
-	update( );
+    d->currentTextVisible = enable;
+    update( );
+}
+
+bool NTimeProgressBar::isTotalTextVisible( ) const
+{ 
+    return d->totalTextVisible;
 }
 
 void NTimeProgressBar::setTotalTextVisible(bool enable)
 {
-    if (enable == totalTextVisible)
+    if (d->totalTextVisible == enable)
         return;
 
-	totalTextVisible = enable;
-	update( );
+    d->totalTextVisible = enable;
+    update( );
 }
 
-	
+
+
+NTimeProgressBarPrivate::NTimeProgressBarPrivate()
+{
+}
+
+NTimeProgressBarPrivate::~NTimeProgressBarPrivate()
+{
+}
+
+
+
