@@ -34,6 +34,8 @@
 #include <QLineEdit>
 #include <QKeyEvent>
 
+class NLineEditPrivate;
+
 #if defined(DESIGNER)
 #include <QtDesigner/QDesignerExportWidget>
 class QDESIGNER_WIDGET_EXPORT NLineEdit : public QLineEdit
@@ -57,9 +59,10 @@ public:
 
     NLineEdit(QWidget *parent = NULL);
     NLineEdit(const QString &contents, QWidget *parent = NULL);
+    virtual ~NLineEdit();
 
-    void setAcceptKeyMode(int akm) { acceptKeys = akm;}
-    int acceptKeyMode( ) const { return acceptKeys;}
+    void setAcceptKeyMode(int akm);
+    int acceptKeyMode( ) const;
 
     virtual QVariant inputMethodQuery(Qt::InputMethodQuery query) const;
 
@@ -68,7 +71,7 @@ protected:
     virtual void inputMethodEvent(QInputMethodEvent *);
 
 private:
-    int acceptKeys;
+    NLineEditPrivate *d;
 };
 
 #endif // _NLINEEDIT_H_

@@ -32,23 +32,42 @@
 #include <QDebug>
 #include <QApplication>
 #include "nlineedit.h"
+#include "nlineedit_p.h"
 
 NLineEdit::NLineEdit(QWidget *parent)
-: QLineEdit(parent)
+: QLineEdit(parent), d(new NLineEditPrivate)
 {
     setAcceptKeyMode(AcceptAllKey);
 }
 
 NLineEdit::NLineEdit(const QString &contents, QWidget *parent)
-: QLineEdit(contents, parent)
+: QLineEdit(contents, parent), d(new NLineEditPrivate)
 {
     setAcceptKeyMode(AcceptAllKey);
 }
 
+NLineEdit::~NLineEdit()
+{
+    if (d != NULL)
+    {
+        delete d;
+        d = NULL;
+    }
+}
+
+void NLineEdit::setAcceptKeyMode(int akm)
+{ 
+    d->acceptKeys = akm;
+}
+
+int NLineEdit::acceptKeyMode( ) const
+{ 
+    return d->acceptKeys;
+}
+
 void NLineEdit::keyPressEvent(QKeyEvent *e)
 {
-    qDebug( ) << "NLineEdit :: keyPressEvent " << e->key( );
-    if (AcceptAllKey & acceptKeys)
+    if (d->acceptKeys & NLineEdit::AcceptAllKey)
     {
 #ifndef DESIGNER
         // FIXME: This piece of code is unnecessary, 
@@ -59,7 +78,7 @@ void NLineEdit::keyPressEvent(QKeyEvent *e)
         return QLineEdit::keyPressEvent(e);
     }
 
-    if (AcceptNumericKey & acceptKeys)
+    if (d->acceptKeys & NLineEdit::AcceptNumericKey)
     {
         // Key_0, Key_1, Key_2, Key_3, Key_4, Key_5, Key_6, Key_7, Key_8, Key_9,
         if ((e->key( ) >= Qt::Key_0) && (e->key( ) <= Qt::Key_9))
@@ -73,7 +92,7 @@ void NLineEdit::keyPressEvent(QKeyEvent *e)
         }
     }
 
-    if (AcceptCursorMoveKey & acceptKeys)
+    if (d->acceptKeys & NLineEdit::AcceptCursorMoveKey)
     {
         // Key_Home, Key_End, Key_Left, Key_Up, Key_Right, Key_Down,
         // Key_PageUp, Key_PageDown,
@@ -81,7 +100,7 @@ void NLineEdit::keyPressEvent(QKeyEvent *e)
             return QLineEdit::keyPressEvent(e);
     }
 
-    if (AcceptMiscKey & acceptKeys)
+    if (d->acceptKeys & NLineEdit::AcceptMiscKey)
     {
         // Key_Escape, Key_Tab, Key_Backtab, Key_Backspace, Key_Return,
         // Key_Enter, Key_Insert, Key_Delete, Key_Pause, 
@@ -130,4 +149,15 @@ void NLineEdit::inputMethodEvent(QInputMethodEvent *ime)
     //FIXME: why send application a ENTER key event?
     QKeyEvent keyEvent = QKeyEvent(QKeyEvent::KeyPress, Qt::Key_Enter, Qt::NoModifier);
     QApplication::sendEvent(this, &keyEvent);
+}
+
+
+
+
+NLineEditPrivate::NLineEditPrivate()
+{
+}
+
+NLineEditPrivate::~NLineEditPrivate()
+{
 }
