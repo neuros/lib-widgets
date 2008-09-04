@@ -94,6 +94,8 @@ Q_SIGNALS:
 
 protected:
     virtual QStyleOptionViewItem viewOptions( ) const;
+    virtual void focusInEvent(QFocusEvent *event);
+    virtual void focusOutEvent(QFocusEvent *event);
     virtual void keyPressEvent(QKeyEvent *event);
     virtual QModelIndex moveCursor(CursorAction cursorAction, Qt::KeyboardModifiers modifiers);
     virtual void resizeEvent(QResizeEvent *event);
@@ -101,13 +103,14 @@ protected:
 
 protected Q_SLOTS:
     virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous);
-    virtual void onAnimationFrameChanged(int frame);
+    virtual void OnAnimationFrameChanged(int frame);
 
 private Q_SLOTS:
-    void onActiveFlashTimerOut( );
+    void OnActiveFlashTimerOut( );
 
 private:
     void updateCurrent( );
+    void checkAnimation(bool enable);
 
 private:
     NListViewPrivate *d;

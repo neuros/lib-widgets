@@ -99,7 +99,7 @@ void NRibbonListView::paintEvent(QPaintEvent *e)
     /* calculate the items that need updating */
     calculateToBeRendered( );
 
-    if ((model( ) == NULL) || (model( )->rowCount(rootIndex( )) <= 0))
+    if ((model( ) == NULL) || (model( )->rowCount(rootIndex( )) <= 0) || state( ) == QAbstractItemView::AnimatingState)
         return NListView::paintEvent(e);
 
     /*
@@ -197,7 +197,7 @@ void NRibbonListView::calculateToBeRendered( )
     const QAbstractItemModel *itemModel = model( );
     const QModelIndex current = currentIndex( );
     const int itemCount = itemModel->rowCount(rootIndex( ));
-
+    
     /* calculate visible indexs */
     QVector<QModelIndex> indexs;
     for (int i = 0; i < itemCount; i ++)

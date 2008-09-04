@@ -42,15 +42,17 @@ public:
     ~NListViewPrivate( );
 
     Qt::Alignment textAlignment;
-    NListView::TextAnimationPolicy textAnimation;
-    QTimeLine *textAnimationTimeLine;
-    int textAnimationInterval;
     bool itemWrapping;
 
     NItemDelegate *itemDelegate;
     bool currentItemActived;
 
     QTimer activeFlashTimer;
+
+    NListView::TextAnimationPolicy textAnimation;
+    QTimeLine textAnimationTimeLine;
+    QString animationText;
+    static const int textAnimationStep = 1;
 
 private:
 

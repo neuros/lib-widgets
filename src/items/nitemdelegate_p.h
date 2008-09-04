@@ -34,8 +34,8 @@ class NItemDelegatePrivate
 {
 
 public:
-    NItemDelegatePrivate( );
-    ~NItemDelegatePrivate( );
+    NItemDelegatePrivate();
+    ~NItemDelegatePrivate();
 
     void doLayout(const QRect &rect, QRect *leftArrowRect, QRect *iconRect,
                   QRect *rightIconRect, QRect *textRect, QRect *selectionRect) const;
@@ -47,6 +47,8 @@ public:
     QSize leftArrowSize;
     QSize iconSize;
     QSize rightIconSize;
+
+    QRect currentItemTextRect; //For text animation
 
 private:
 

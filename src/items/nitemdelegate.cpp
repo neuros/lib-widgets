@@ -115,6 +115,11 @@ void NItemDelegate::setRightIconSize(const QSize &size)
     d->rightIconSize = size;
 }
 
+QRect NItemDelegate::currentTextRect() const
+{
+    return d->currentItemTextRect;
+}
+
 QWidget * NItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     return QItemDelegate::createEditor(parent, option, index);
@@ -148,6 +153,7 @@ void NItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
         hasFocus = true;
         //Save the focus item index, so that we can paint the same style as focus in while focus out
         d->focusIndex = index;
+        d->currentItemTextRect = itemTextRect;
     }
 
     if (hasFocus)

@@ -66,6 +66,8 @@ public:
     QSize rightIconSize( ) const;
     void setRightIconSize(const QSize &size);
 
+    QRect currentTextRect() const;
+
     void drawCursorBar(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     void drawSelection(QPainter *painter, const QStyleOptionViewItem &option, const QRect &boundRect, const QColor &color) const;
     void drawHLine(QPainter *painter, const QStyleOptionViewItem &option, const QLine &line, const QColor &color) const;

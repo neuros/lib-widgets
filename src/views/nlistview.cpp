@@ -36,6 +36,7 @@
 #include <QKeyEvent>
 #include "nlistview.h"
 #include "nlistview_p.h"
+#include "nlistviewitem.h"
 
 NListView::NListView(QWidget * parent)
 : QListView(parent), d(new NListViewPrivate)
@@ -62,7 +63,8 @@ NListView::NListView(QWidget * parent)
     setPalette(pal);
 
     /* connect signals and slots */
-    connect(&d->activeFlashTimer, SIGNAL(timeout( )), this, SLOT(onActiveFlashTimerOut( )));
+    connect(&d->textAnimationTimeLine, SIGNAL(frameChanged(int)), this, SLOT(OnAnimationFrameChanged(int)));
+    connect(&d->activeFlashTimer, SIGNAL(timeout( )), this, SLOT(OnActiveFlashTimerOut( )));
 }
 
 NListView::~NListView( )
@@ -85,16 +87,21 @@ void NListView::setTextAnimationPolicy(TextAnimationPolicy policy)
         return;
 
     d->textAnimation = policy;
+    checkAnimation(d->textAnimation == AlwaysOff ? false : true);
 }
 
 int NListView::textAnimationInterval( ) const
 { 
-    return d->textAnimationInterval;
+    return d->textAnimationTimeLine.updateInterval();
 }
 
 void NListView::setTextAnimationInterval(int interval)
 { 
-    d->textAnimationInterval = interval;
+    if (d->textAnimationTimeLine.updateInterval() == interval)
+        return;
+
+    d->textAnimationTimeLine.setUpdateInterval(interval);
+    checkAnimation(d->textAnimation == AlwaysOff ? false : true);
 }
 
 Qt::Alignment NListView::alignment( ) const
@@ -184,17 +191,28 @@ QRect NListView::visualRect(const QModelIndex &index) const
         return QListView::visualRect(index);
 }
 
-void NListView::onAnimationFrameChanged(int frame)
+void NListView::OnAnimationFrameChanged(int frame)
 {
-    qDebug( ) << "NListView::onAnimationFrameChanged" << frame;
     setState(QAbstractItemView::AnimatingState);
-    viewport( )->update(visualRect(currentIndex( )));
+    viewport( )->update(d->itemDelegate->currentTextRect());
 }
 
-void NListView::onActiveFlashTimerOut( )
+void NListView::OnActiveFlashTimerOut( )
 {
     d->currentItemActived = false;
     updateCurrent( );
+}
+
+void NListView::focusInEvent(QFocusEvent *event)
+{
+    QListView::focusInEvent(event);
+    checkAnimation(true);
+}
+
+void NListView::focusOutEvent(QFocusEvent *event)
+{
+    checkAnimation(false);
+    QListView::focusOutEvent(event);
 }
 
 void NListView::keyPressEvent(QKeyEvent *event)
@@ -212,7 +230,7 @@ void NListView::keyPressEvent(QKeyEvent *event)
 QModelIndex NListView::moveCursor ( CursorAction cursorAction, 
                                     Qt::KeyboardModifiers modifiers )
 {
-    if (NULL == model( ))
+    if (model() == NULL || !currentIndex().isValid())
         return QListView::moveCursor(cursorAction, modifiers);
 
     int rowCnt = model( )->rowCount(model( )->parent(currentIndex( )));
@@ -288,7 +306,9 @@ QModelIndex NListView::moveCursor ( CursorAction cursorAction,
 
 void NListView::currentChanged(const QModelIndex &current, const QModelIndex &previous)
 {
+    checkAnimation(false);
     QListView::currentChanged(current, previous);
+    checkAnimation(true);
     emit currentRowChanged(current.row( ), previous.row( ));
 }
 
@@ -306,6 +326,8 @@ QStyleOptionViewItem NListView::viewOptions( ) const
 
 void NListView::resizeEvent(QResizeEvent *event)
 {
+    checkAnimation(false);
+
     QListView::resizeEvent(event);
 
     NItemDelegate *delegate = qobject_cast<NItemDelegate *>(itemDelegate( ));
@@ -321,6 +343,8 @@ void NListView::resizeEvent(QResizeEvent *event)
         delegate->setIconSize(iconSize( ));
     if (delegate->isRightIconEnable( ) && !delegate->rightIconSize( ).isValid( ))
         delegate->setRightIconSize(QSize(fm.height( ), fm.height( )));
+
+    checkAnimation(true);
 }
 
 void NListView::paintEvent(QPaintEvent *event)
@@ -344,7 +368,28 @@ void NListView::paintEvent(QPaintEvent *event)
     }
     else if (state( ) == QAbstractItemView::AnimatingState)
     {
-        qDebug( ) << "NListView::paintEvent::AnimatingState" << event->rect( );
+        setState(QAbstractItemView::NoState);
+        NItemDelegate *delegate = qobject_cast<NItemDelegate *>(itemDelegate( ));
+        if (NULL != delegate)
+        {
+            /* paint animation text */
+            QPainter painter(viewport( ));
+            QStyleOptionViewItem option = viewOptions( );
+            option.state |= QStyle::State_HasFocus;
+            QColor textColor = qvariant_cast<QColor>(currentIndex().data(NListViewItem::TextColorRole));
+            if (textColor.isValid( ))
+                option.palette.setColor(QPalette::BrightText, textColor);
+            option.rect = event->rect();
+            painter.fillRect(option.rect.adjusted(0, 0, 0, -option.rect.height( )/2), QColor(64, 64, 64));
+            painter.fillRect(option.rect.adjusted(0, option.rect.height( )/2, 0, 0), QColor(8, 8, 8));
+            delegate->drawDisplayExternal(&painter, option, option.rect, d->animationText.mid(d->textAnimationTimeLine.currentFrame()));
+            if (currentIndex().data(NListViewItem::HLineRole).toBool( ))
+                delegate->drawHLine(&painter, option,
+                                    QLine(QPoint(option.rect.left( ), option.rect.y( ) + option.rect.height( )/2),
+                                          QPoint(option.rect.right( ), option.rect.y( ) + option.rect.height( )/2)),
+                                    option.palette.color(QPalette::Foreground));
+        }
+
         return;
     }
     else
@@ -358,20 +403,59 @@ void NListView::updateCurrent( )
     currentIndex( ).isValid( ) ? update(currentIndex( )) : viewport( )->update( );  
 }
 
+void NListView::checkAnimation(bool enable)
+{
+    switch (d->textAnimation)
+    {
+    case AsNeeded:
+        if (enable)
+        {
+            if (d->textAnimationTimeLine.state() != QTimeLine::NotRunning)
+            {
+                d->textAnimationTimeLine.stop();
+                d->textAnimationTimeLine.setCurrentTime(0);
+                setState(QAbstractItemView::NoState);
+            }
+
+            int textWidth = d->itemDelegate->currentTextRect().width();
+            d->animationText = currentIndex().data(NListViewItem::DisplayRole).toString();
+            QFontMetrics fm(viewport()->font());
+            if (fm.width(d->animationText) > textWidth)
+            {
+                int endFrame = d->animationText.size() - (textWidth*3/4)/fm.averageCharWidth();
+                d->textAnimationTimeLine.setFrameRange(0, endFrame > 0? endFrame:d->animationText.size());
+                d->textAnimationTimeLine.setDuration(d->textAnimationTimeLine.updateInterval() * (d->textAnimationTimeLine.endFrame() - d->textAnimationTimeLine.startFrame())/d->textAnimationStep);
+                d->textAnimationTimeLine.setCurrentTime(0);
+                d->textAnimationTimeLine.start();
+            }
+
+            break;
+        }
+    case AlwaysOff:
+        d->textAnimationTimeLine.stop();
+        d->textAnimationTimeLine.setCurrentTime(0);
+        setState(QAbstractItemView::NoState);
+    default:
+        break;
+    }
+}
+
 
 
 
 NListViewPrivate::NListViewPrivate( )
 {
     textAlignment = Qt::AlignLeft|Qt::AlignVCenter;
-    textAnimation = NListView::AsNeeded;
-    textAnimationTimeLine = NULL;
-    textAnimationInterval = 1000;
+    textAnimation = NListView::AlwaysOff;
     itemWrapping = true;
 
     itemDelegate = NULL;
     currentItemActived = false;
     activeFlashTimer.setInterval(150); //150ms
+
+    textAnimationTimeLine.setDirection(QTimeLine::Forward);
+    textAnimationTimeLine.setLoopCount (0); //loop forever
+    textAnimationTimeLine.setUpdateInterval(1000); //ms
 }
 
 NListViewPrivate::~NListViewPrivate( )
