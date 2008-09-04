@@ -47,6 +47,8 @@
  * @author   nerochiaro
  */
 
+class NPushButtonPrivate;
+
 #if defined(DESIGNER)
 #include <QtDesigner/QDesignerExportWidget>
 class QDESIGNER_WIDGET_EXPORT NPushButton : public QPushButton
@@ -60,12 +62,13 @@ public:
     NPushButton(QWidget *parent = NULL);
     NPushButton(const QString &text, QWidget *parent = NULL);
     NPushButton(const QIcon &icon, const QString &text, QWidget *parent = NULL);
+    virtual ~NPushButton();
 
 protected:
     virtual void keyPressEvent(QKeyEvent *);
 
 private:
-    static const int AnimateClickDelay = 200;
+    NPushButtonPrivate *d;
 };
 
 #endif // _NPUSHBUTTON_H_

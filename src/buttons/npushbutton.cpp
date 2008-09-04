@@ -32,26 +32,46 @@
 //#define QT_NO_DEBUG_OUTPUT
 #include <QDebug>
 #include "npushbutton.h"
+#include "npushbutton_p.h"
 
 NPushButton::NPushButton(QWidget *parent)
-: QPushButton(parent)
+: QPushButton(parent), d(new NPushButtonPrivate)
 {
 }
 
 NPushButton::NPushButton(const QString &text, QWidget *parent)
-: QPushButton(text, parent)
+: QPushButton(text, parent), d(new NPushButtonPrivate)
 {
 }
 
 NPushButton::NPushButton(const QIcon &icon, const QString &text, QWidget *parent)
-: QPushButton(icon, text, parent)
+: QPushButton(icon, text, parent), d(new NPushButtonPrivate)
 {
+}
+
+NPushButton::~NPushButton()
+{
+    if (d != NULL)
+    {
+        delete d;
+        d = NULL;
+    }
 }
 
 void NPushButton::keyPressEvent(QKeyEvent *event)
 {
-	if (event->key( ) == Qt::Key_Enter) 
-		animateClick(AnimateClickDelay);
+    if (event->key( ) == Qt::Key_Enter)
+        animateClick(d->AnimateClickDelay);
 
-	return QAbstractButton::keyPressEvent(event);
+    return QAbstractButton::keyPressEvent(event);
+}
+
+
+
+NPushButtonPrivate::NPushButtonPrivate()
+{
+}
+
+NPushButtonPrivate::~NPushButtonPrivate()
+{
 }
