@@ -47,48 +47,48 @@ NTimeMark::~NTimeMark()
     }
 }
 
-inline bool NTimeMark::operator==(const NTimeMark &other)
+bool NTimeMark::operator==(const NTimeMark &other)
 { 
     return d->type == other.type() && d->state == other.state()
     && d->start == other.start() && d->end == other.end();
 }
 
-inline NTimeMark::MarkType NTimeMark::type() const
+NTimeMark::MarkType NTimeMark::type() const
 { 
     return d->type;
 }
 
-inline void NTimeMark::setType(MarkType type)
+void NTimeMark::setType(MarkType type)
 { 
     d->type = type;
 }
 
-inline NTimeMark::MarkProp NTimeMark::state() const
+NTimeMark::MarkProp NTimeMark::state() const
 { 
     return d->state;
 }
 
-inline void NTimeMark::setState(MarkProp state)
+void NTimeMark::setState(MarkProp state)
 { 
     d->state = state;
 }
 
-inline int NTimeMark::start() const
+int NTimeMark::start() const
 { 
     return d->start;
 }
 
-inline void NTimeMark::setStart(int start)
+void NTimeMark::setStart(int start)
 { 
     d->start = start;
 }
 
-inline int NTimeMark::end() const
+int NTimeMark::end() const
 { 
     return d->end;
 }
 
-inline void NTimeMark::setEnd(int end)
+void NTimeMark::setEnd(int end)
 { 
     d->end = end;
 }

@@ -48,16 +48,16 @@ public:
     NTimeMark();
     virtual ~NTimeMark();
 
-    inline bool operator==(const NTimeMark &other);
+    bool operator==(const NTimeMark &other);
 
-    inline MarkType type() const;
-    inline void setType(MarkType type);
-    inline MarkProp state() const;
-    inline void setState(MarkProp state);
-    inline int start() const;
-    inline void setStart(int start);
-    inline int end() const;
-    inline void setEnd(int end);
+    MarkType type() const;
+    void setType(MarkType type);
+    MarkProp state() const;
+    void setState(MarkProp state);
+    int start() const;
+    void setStart(int start);
+    int end() const;
+    void setEnd(int end);
 
 private:
     NTimeMarkPrivate *d;
