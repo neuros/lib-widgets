@@ -1,5 +1,3 @@
-#ifndef _NCAPACITYBAR_H_
-#define _NCAPACITYBAR_H_
 /*
  *  Copyright(C) 2007 Neuros Technology International LLC. 
  *               <www.neurostechnology.com>
@@ -22,7 +20,7 @@
  *
  ****************************************************************************
  *
- * NCapacityBar implement header.
+ * NProgressBar implement routines.
  *
  * REVISION:
  * 
@@ -30,36 +28,46 @@
  *
  */
 
-#include <QProgressBar>
+//#define QT_NO_DEBUG_OUTPUT
+#include <QDebug>
+#include <QPalette>
+#include <QPainter>
+#include "nprogressbar.h"
+#include "nprogressbar_p.h"
 
-#if defined(DESIGNER)
-#include <QtDesigner/QDesignerExportWidget>
-class QDESIGNER_WIDGET_EXPORT NCapacityBar : public QProgressBar
-#else
-class NCapacityBar : public QProgressBar
-#endif
+NProgressBar::NProgressBar(QWidget *parent)
+: QProgressBar(parent), d(new NProgressBarPrivate)
 {
-    Q_OBJECT
-    Q_ENUMS(CapacityType);
-    Q_PROPERTY(CapacityType capacityType READ capacity WRITE setCapacity)
+    setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    QPalette pal = palette();
+    pal.setColor(QPalette::Normal, QPalette::Window, QColor(36, 36, 36));
+    pal.setColor(QPalette::Normal, QPalette::Highlight, QColor(0, 170, 255));
+    setPalette(pal);
+}
 
-public:
-    enum CapacityType { CapacityNone = 0, CapacityDiskSize };
+NProgressBar::~NProgressBar()
+{
+    if (d != NULL)
+    {
+        delete d;
+        d = NULL;
+    }
+}
 
-    NCapacityBar(QWidget *parent = NULL);
-    virtual ~NCapacityBar( );
+QString NProgressBar::text() const
+{
+    return QProgressBar::text();
+}
 
-    void setCapacity(CapacityType type);
-    CapacityType capacity( ) const { return capacityType; }
 
-    virtual QString text( ) const;
 
-private:
-    const char * CoolCreateReadableSizeString(unsigned long long size, unsigned long block_size,
-                                              unsigned long display_unit) const;
 
-private:
-    CapacityType capacityType;
-};
+NProgressBarPrivate::NProgressBarPrivate()
+{
 
-#endif // _NCAPACITYBAR_H_
+}
+
+NProgressBarPrivate::~NProgressBarPrivate()
+{
+}
+

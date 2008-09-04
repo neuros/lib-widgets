@@ -31,10 +31,10 @@
 #include "neux.h"
 #include "ngradientlabelplugin.h"
 #include "ndatetimelabelplugin.h"
-#include "ncapacitybarplugin.h"
 #include "nhorizontalcomboboxplugin.h"
 #include "nlineeditplugin.h"
 #include "nlistviewplugin.h"
+#include "nprogressbarplugin.h"
 #include "npushbuttonplugin.h"
 #include "nribbonlistviewplugin.h"
 #include "nstorageiconlabelplugin.h"
@@ -43,12 +43,12 @@
 Neux::Neux(QObject *parent)
 : QObject(parent)
 {
-    widgets.append(new NCapacityBarPlugin(this));
     widgets.append(new NGradientLabelPlugin(this));
     widgets.append(new NDateTimeLabelPlugin(this));
     widgets.append(new NHorizontalComboBoxPlugin(this));
     widgets.append(new NLineEditPlugin(this));
     widgets.append(new NListViewPlugin(this));
+    widgets.append(new NProgressBarPlugin(this));
     widgets.append(new NPushButtonPlugin(this));
     widgets.append(new NRibbonListViewPlugin(this));
     widgets.append(new NStorageIconLabelPlugin(this));

@@ -20,7 +20,7 @@
  *
  ****************************************************************************
  *
- * NCapacityBarPlugin source
+ * NProgressBarPlugin source
  *
  * REVISION:
  * 
@@ -28,11 +28,11 @@
  *
  */
 
-#include "ncapacitybar.h"
-#include "ncapacitybarplugin.h"
+#include "nprogressbar.h"
+#include "nprogressbarplugin.h"
 #include <QtPlugin>
 
-NCapacityBarPlugin::NCapacityBarPlugin(QObject *parent)
+NProgressBarPlugin::NProgressBarPlugin(QObject *parent)
 : QObject(parent), initialized(false)
 {
 }
@@ -44,7 +44,7 @@ NCapacityBarPlugin::NCapacityBarPlugin(QObject *parent)
  * and task menu extensions (see QDesignerTaskMenuExtension)
  * should be set up in this function.
  */
-void NCapacityBarPlugin::initialize(QDesignerFormEditorInterface *formEditor)
+void NProgressBarPlugin::initialize(QDesignerFormEditorInterface *formEditor)
 {
     Q_UNUSED(formEditor);
     if (initialized)
@@ -58,7 +58,7 @@ void NCapacityBarPlugin::initialize(QDesignerFormEditorInterface *formEditor)
  * Reimplementations usually check whether the initialize( ) function
  * has been called and return the result of this test.
  */
-bool NCapacityBarPlugin::isInitialized( ) const
+bool NProgressBarPlugin::isInitialized( ) const
 {
     return initialized;
 }
@@ -66,9 +66,9 @@ bool NCapacityBarPlugin::isInitialized( ) const
 /*
  * Returns a new instance of the custom widget, with the given parent.
  */
-QWidget *NCapacityBarPlugin::createWidget(QWidget *parent)
+QWidget *NProgressBarPlugin::createWidget(QWidget *parent)
 {
-    return new NCapacityBar(parent);
+    return new NProgressBar(parent);
 }
 
 /*
@@ -76,15 +76,15 @@ QWidget *NCapacityBarPlugin::createWidget(QWidget *parent)
  * The name returned must be identical to the class name 
  * used for the custom widget.
  */
-QString NCapacityBarPlugin::name( ) const
+QString NProgressBarPlugin::name( ) const
 {
-    return "NCapacityBar";
+    return "NProgressBar";
 }
 
 /*
  * Returns the name of the group to which the custom widget belongs.
  */
-QString NCapacityBarPlugin::group( ) const
+QString NProgressBarPlugin::group( ) const
 {
     return "Neux";
 }
@@ -92,7 +92,7 @@ QString NCapacityBarPlugin::group( ) const
 /*
  * Returns the icon used to represent the custom widget in Qt Designer's widget box.
  */
-QIcon NCapacityBarPlugin::icon( ) const
+QIcon NProgressBarPlugin::icon( ) const
 {
     return QIcon( );
 }
@@ -101,7 +101,7 @@ QIcon NCapacityBarPlugin::icon( ) const
  * Returns a short description of the widget that can be used 
  * by Qt Designer in a tool tip.
  */
-QString NCapacityBarPlugin::toolTip( ) const
+QString NProgressBarPlugin::toolTip( ) const
 {
     return "";
 }
@@ -110,7 +110,7 @@ QString NCapacityBarPlugin::toolTip( ) const
  * Returns a description of the widget that can be used
  * by Qt Designer in "What's This?" help for the widget.
  */
-QString NCapacityBarPlugin::whatsThis( ) const
+QString NProgressBarPlugin::whatsThis( ) const
 {
     return "";
 }
@@ -122,7 +122,7 @@ QString NCapacityBarPlugin::whatsThis( ) const
  * to create a suitable #includes statement in the code it generates
  * for the form containing the custom widget.
  */
-QString NCapacityBarPlugin::includeFile( ) const
+QString NProgressBarPlugin::includeFile( ) const
 {
     return "ncapacitybar.h";
 }
@@ -130,7 +130,7 @@ QString NCapacityBarPlugin::includeFile( ) const
 /*
  * True if the widget will be used to hold child widgets; otherwise false.
  */
-bool NCapacityBarPlugin::isContainer( ) const
+bool NProgressBarPlugin::isContainer( ) const
 {
     return false;
 }
@@ -138,8 +138,8 @@ bool NCapacityBarPlugin::isContainer( ) const
 /*
  * Returns the XML that is used to describe the custom widget's properties to Qt Designer.
  */
-QString NCapacityBarPlugin::domXml( ) const
+QString NProgressBarPlugin::domXml( ) const
 {
-    return "<widget class=\"NCapacityBar\" name=\"capacityBar\"> </widget>\n";
+    return "<widget class=\"NProgressBar\" name=\"progressBar\"> </widget>\n";
 }
 

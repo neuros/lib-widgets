@@ -1,5 +1,5 @@
-#ifndef _NCAPACITYBARPLUGIN_H_
-#define _NCAPACITYBARPLUGIN_H_
+#ifndef _NPROGRESSBARPLUGIN_H_
+#define _NPROGRESSBARPLUGIN_H_
 /*
  *  Copyright(C) 2007 Neuros Technology International LLC. 
  *               <www.neurostechnology.com>
@@ -22,7 +22,7 @@
  *
  ****************************************************************************
  *
- * NCapacityBarPlugin header
+ * NProgressBarPlugin header
  *
  * REVISION:
  * 
@@ -36,7 +36,7 @@
  * Note: That the only part of the class definition 
  *          that is specific to this particular custom widget is the class name.
  */
-class NCapacityBarPlugin : public QObject, public QDesignerCustomWidgetInterface
+class NProgressBarPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
     /*
      * The Q_OBJECT macro must appear in the private section of a class definition
@@ -55,7 +55,7 @@ class NCapacityBarPlugin : public QObject, public QDesignerCustomWidgetInterface
     Q_INTERFACES(QDesignerCustomWidgetInterface)
 
 public:
-    NCapacityBarPlugin(QObject *parent = NULL);
+    NProgressBarPlugin(QObject *parent = NULL);
 
     bool isContainer( ) const;
     bool isInitialized( ) const;
@@ -73,5 +73,5 @@ private:
     bool initialized;
 };
 
-#endif // _NCAPACITYBARPLUGIN_H_
+#endif // _NPROGRESSBARPLUGIN_H_
 

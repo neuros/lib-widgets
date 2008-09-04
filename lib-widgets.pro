@@ -28,7 +28,7 @@ CONFIG(designer) {
 DEFINES += DESIGNER
 CONFIG += plugin
 
-HEADERS +=	./designer-plugins/ncapacitybarplugin.h \
+HEADERS +=	./designer-plugins/nprogressbarplugin.h \
 		./designer-plugins/nlineeditplugin.h \
 		./designer-plugins/nlistviewplugin.h \
 		./designer-plugins/ngradientlabelplugin.h \
@@ -40,7 +40,7 @@ HEADERS +=	./designer-plugins/ncapacitybarplugin.h \
 		./designer-plugins/ntimeprogressbarplugin.h \
 		./designer-plugins/neux.h
 
-SOURCES +=	./designer-plugins/ncapacitybarplugin.cpp \
+SOURCES +=	./designer-plugins/nprogressbarplugin.cpp \
 		./designer-plugins/nlineeditplugin.cpp \
 		./designer-plugins/nlistviewplugin.cpp \
 		./designer-plugins/ngradientlabelplugin.cpp \
@@ -61,7 +61,8 @@ LIBS += -L${TOOLCHAIN}/Qt/lib
 LIBS+=
 
 #Source Files
-SOURCES +=	./src/bars/ncapacitybar.cpp \
+SOURCES +=	./src/bars/nprogressbar.cpp \
+		./src/bars/ntimemark.cpp \
 		./src/bars/ntimeprogressbar.cpp \
 		./src/boxes/nhorizontalcombobox.cpp \
 		./src/buttons/npushbutton.cpp \
@@ -80,7 +81,8 @@ SOURCES +=	./src/bars/ncapacitybar.cpp \
 		./src/views/nribbonlistview.cpp
 
 #Header Files
-HEADERS +=	./src/bars/ncapacitybar.h \
+HEADERS +=	./src/bars/nprogressbar.h \
+		./src/bars/ntimemark.h \
 		./src/bars/ntimeprogressbar.h \
 		./src/boxes/nhorizontalcombobox.h \
 		./src/buttons/npushbutton.h \
