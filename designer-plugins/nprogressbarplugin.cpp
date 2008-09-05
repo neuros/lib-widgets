@@ -124,7 +124,7 @@ QString NProgressBarPlugin::whatsThis( ) const
  */
 QString NProgressBarPlugin::includeFile( ) const
 {
-    return "ncapacitybar.h";
+    return "nprogressbar.h";
 }
 
 /*
