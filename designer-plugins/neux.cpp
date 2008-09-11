@@ -37,6 +37,7 @@
 #include "nprogressbarplugin.h"
 #include "npushbuttonplugin.h"
 #include "nribbonlistviewplugin.h"
+#include "nscrolllabelplugin.h"
 #include "nstorageiconlabelplugin.h"
 #include "ntimeprogressbarplugin.h"
 
@@ -51,6 +52,7 @@ Neux::Neux(QObject *parent)
     widgets.append(new NProgressBarPlugin(this));
     widgets.append(new NPushButtonPlugin(this));
     widgets.append(new NRibbonListViewPlugin(this));
+    widgets.append(new NScrollLabelPlugin(this));
     widgets.append(new NStorageIconLabelPlugin(this));
     widgets.append(new NTimeProgressBarPlugin(this));
 }

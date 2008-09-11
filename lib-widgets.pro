@@ -36,6 +36,7 @@ HEADERS +=	./designer-plugins/nprogressbarplugin.h \
 		./designer-plugins/nhorizontalcomboboxplugin.h \
 		./designer-plugins/npushbuttonplugin.h \
 		./designer-plugins/nribbonlistviewplugin.h \
+		./designer-plugins/nscrolllabelplugin.h \
 		./designer-plugins/nstorageiconlabelplugin.h \
 		./designer-plugins/ntimeprogressbarplugin.h \
 		./designer-plugins/neux.h
@@ -48,6 +49,7 @@ SOURCES +=	./designer-plugins/nprogressbarplugin.cpp \
 		./designer-plugins/nhorizontalcomboboxplugin.cpp \
 		./designer-plugins/npushbuttonplugin.cpp \
 		./designer-plugins/nribbonlistviewplugin.cpp \
+		./designer-plugins/nscrolllabelplugin.cpp \
 		./designer-plugins/nstorageiconlabelplugin.cpp \
 		./designer-plugins/ntimeprogressbarplugin.cpp \
 		./designer-plugins/neux.cpp
@@ -70,6 +72,7 @@ SOURCES +=	./src/bars/nprogressbar.cpp \
 		./src/items/nitemdelegate.cpp \
 		./src/labels/ngradientlabel.cpp \
 		./src/labels/ndatetimelabel.cpp \
+		./src/labels/nscrolllabel.cpp \
 		./src/labels/nstorageiconlabel.cpp \
 		./src/menus/naction.cpp \
 		./src/menus/nxim.cpp \
@@ -90,6 +93,7 @@ HEADERS +=	./src/bars/nprogressbar.h \
 		./src/items/nitemdelegate.h \
 		./src/labels/ngradientlabel.h \
 		./src/labels/ndatetimelabel.h \
+		./src/labels/nscrolllabel.h \
 		./src/labels/nstorageiconlabel.h \
 		./src/menus/naction.h \
 		./src/menus/nxim.h \
